@@ -47,7 +47,7 @@ const Dropdown: React.FC<DropdownProps> = ({
     <div className={"relative"} ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full p-3 bg-white border border-custom-blue rounded-md text-left flex justify-between items-center hover:bg-gray-50 transition-colors"
+        className="w-full p-1 bg-white border border-custom-blue rounded-md text-left flex justify-between items-center hover:bg-gray-50 transition-colors"
       >
         <span>{selectedItem ? selectedItem.label : placeholder}</span>
         <span className={`text-custom-green transform transition-transform ${isOpen ? 'rotate-180' : ''}`}>
@@ -57,7 +57,7 @@ const Dropdown: React.FC<DropdownProps> = ({
 
       {isOpen && (
         <div className="absolute z-10 w-full mt-1 bg-white border border-custom-blue rounded-md shadow-lg max-h-60 overflow-auto">
-          <ul className="px-3 py-2 ">
+          <ul className="px-3 py-1 ">
             {isClickable && (
               <li className='text-custom-green'>
               <button
