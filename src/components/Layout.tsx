@@ -1,12 +1,12 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import Navigation from '../components/Navigation';
+import Navigation from './Navigation/Navigation';
 
 const Layout: React.FC = () => {
   return (
-    <div>
+    <div className='flex flex-row bg-custom-light-blue text-custom-black'>
       <Navigation />
-      <main style={{ padding: '2rem' }}>
+      <main className='w-full h-screen overflow-y-auto'>
         <Outlet />
       </main>
     </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import ecolexLogo from '../../assets/ecolex-logo.svg';
+import ecolexLogo from '../../assets/ecolex-logo.png';
 import NavigationItem from './NavigationItem';
 
 const Navigation: React.FC = () => {
@@ -11,7 +11,7 @@ const Navigation: React.FC = () => {
       </div>
       
       {/* Menu Items */}
-      <ul className="space-y-4">
+      <ul className="space-y-4 ">
         <NavigationItem label="Home" destiny="/" />
         <NavigationItem label="Dashboard" destiny="/dashboard" />
         <NavigationItem label="Novo projeto" destiny="/novo-projeto" />
