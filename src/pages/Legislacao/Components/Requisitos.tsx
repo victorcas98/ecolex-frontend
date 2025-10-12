@@ -1,45 +1,38 @@
 import React, { useState, useEffect } from "react";
 import Button from "../../../components/Button";
 import TextInput from "../../../components/TextInput";
-import { useTemas } from "../../../hooks";
+import { useTemas, useRequisitos } from "../../../hooks";
 
 interface RequisitosSectionProps {
-  temaId?: string;
+  temaId: string;
 }
 
 const RequisitosSection: React.FC<RequisitosSectionProps> = ({ temaId }) => {
   const [novoRequisito, setNovoRequisito] = useState("");
   const [showInput, setShowInput] = useState(false);
   const { getTemaById } = useTemas();
-  const [requisitosDoTema, setRequisitosDoTema] = useState<{
-    id: number | string;
-    descricao: string;
-    temaId: number | string;
-  }[]>([]);
+  const { requisitos, getByTema, createRequisito, loading } = useRequisitos();
 
   useEffect(() => {
-    let mounted = true;
-    const load = async () => {
-      if (!temaId) return setRequisitosDoTema([]);
-      const tema = await getTemaById(temaId);
-      if (!mounted) return;
-      setRequisitosDoTema(tema?.requisitos || []);
-    };
-    load();
-    return () => { mounted = false };
-  }, [temaId, getTemaById]);
+    getByTema(temaId);
+  }, [temaId, getByTema]);
 
-  const handleAddRequisito = () => {
-    // TODO: call requisitosService.create(...) then refresh tema requisitos
-    console.log('Adicionar requisito (pendente):', novoRequisito, temaId);
+  const handleAddRequisito = async () => {
+    const criado = await createRequisito({ descricao: novoRequisito, temaId });
+    if (criado) {
+      // Optionally refresh tema details (keeps source-of-truth in temas hook)
+      await getTemaById(temaId);
+      setNovoRequisito("");
+      setShowInput(false);
+    }
   };
   return (
     <div className={"px-2"}>
       {/* Lista de requisitos */}
-      {requisitosDoTema.length > 0 && (
+      {requisitos.length > 0 && (
         <div className="space-y-2">
           <ul className="space-y-1">
-            {requisitosDoTema.map((requisito) => (
+            {requisitos.map((requisito) => (
               <li key={requisito.id} className="">
                 {requisito.descricao}
               </li>
@@ -64,9 +57,9 @@ const RequisitosSection: React.FC<RequisitosSectionProps> = ({ temaId }) => {
             <div className="flex space-x-2">
               <Button
                 onClick={handleAddRequisito}
-                disabled={!novoRequisito.trim()}
+                disabled={!novoRequisito.trim() || loading}
               >
-                Adicionar
+                {loading ? 'Adicionando...' : 'Adicionar'}
               </Button>
               <Button
                 onClick={() => {

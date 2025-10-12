@@ -1,9 +1,11 @@
 import { useState, useCallback } from 'react';
 import { temasService } from '../services';
 import type { Tema, CreateTemaData, UpdateTemaData } from '../services';
+import { useAppContext } from '../contexts/AppContext';
 
 interface UseTemas {
   temas: Tema[];
+  setTemas: React.Dispatch<React.SetStateAction<Tema[]>>;
   loading: boolean;
   error: string | null;
 
@@ -24,6 +26,7 @@ export const useTemas = (): UseTemas => {
   const clearError = useCallback(() => {
     setError(null);
   }, []);
+  const { showError, showSuccess } = useAppContext();
 
   const getAllTemas = useCallback(async () => {
     try {
@@ -32,12 +35,14 @@ export const useTemas = (): UseTemas => {
       const data = await temasService.getAll();
       setTemas(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao buscar temas');
+      const message = err instanceof Error ? err.message : 'Erro ao buscar temas';
+      setError(message);
       console.error('Erro ao buscar temas:', err);
+      showError(message);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [showError]);
 
   const getSemLei = useCallback(async () => {
     try {
@@ -46,12 +51,14 @@ export const useTemas = (): UseTemas => {
       const data = await temasService.getSemLei();
       setTemas(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao buscar temas sem lei');
+      const message = err instanceof Error ? err.message : 'Erro ao buscar temas sem lei';
+      setError(message);
       console.error('Erro ao buscar temas sem lei:', err);
+      showError(message);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [showError]);
 
   const getTemaById = useCallback(async (id: string | number): Promise<Tema | null> => {
     try {
@@ -60,13 +67,15 @@ export const useTemas = (): UseTemas => {
       const tema = await temasService.getById(id);
       return tema;
     } catch (err) {
-      setError(err instanceof Error ? err.message : `Erro ao buscar tema ${id}`);
+      const message = err instanceof Error ? err.message : `Erro ao buscar tema ${id}`;
+      setError(message);
       console.error(`Erro ao buscar tema ${id}:`, err);
+      showError(message);
       return null;
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [showError]);
 
   const createTema = useCallback(async (temaData: CreateTemaData): Promise<Tema | null> => {
     try {
@@ -74,15 +83,18 @@ export const useTemas = (): UseTemas => {
       setError(null);
       const novoTema = await temasService.create(temaData);
       setTemas(prev => [...prev, novoTema]);
+      showSuccess('Tema criado com sucesso');
       return novoTema;
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao criar tema');
+      const message = err instanceof Error ? err.message : 'Erro ao criar tema';
+      setError(message);
       console.error('Erro ao criar tema:', err);
+      showError(message);
       return null;
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [showError, showSuccess]);
 
   const updateTema = useCallback(async (id: string | number, temaData: UpdateTemaData): Promise<Tema | null> => {
     try {
@@ -90,15 +102,18 @@ export const useTemas = (): UseTemas => {
       setError(null);
       const temaAtualizado = await temasService.update(id, temaData);
       setTemas(prev => prev.map(t => (t.id === id ? temaAtualizado : t)));
+      showSuccess('Tema atualizado');
       return temaAtualizado;
     } catch (err) {
-      setError(err instanceof Error ? err.message : `Erro ao atualizar tema ${id}`);
+      const message = err instanceof Error ? err.message : `Erro ao atualizar tema ${id}`;
+      setError(message);
       console.error(`Erro ao atualizar tema ${id}:`, err);
+      showError(message);
       return null;
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [showError, showSuccess]);
 
   const deleteTema = useCallback(async (id: string | number): Promise<boolean> => {
     try {
@@ -106,26 +121,30 @@ export const useTemas = (): UseTemas => {
       setError(null);
       const sucesso = await temasService.delete(id);
       if (sucesso) setTemas(prev => prev.filter(t => t.id !== id));
+      if (sucesso) showSuccess('Tema removido');
       return sucesso;
     } catch (err) {
-      setError(err instanceof Error ? err.message : `Erro ao deletar tema ${id}`);
+      const message = err instanceof Error ? err.message : `Erro ao deletar tema ${id}`;
+      setError(message);
       console.error(`Erro ao deletar tema ${id}:`, err);
+      showError(message);
       return false;
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [showError, showSuccess]);
 
   return {
     temas,
     loading,
     error,
+    clearError,
     getAllTemas,
     getSemLei,
     getTemaById,
     createTema,
     updateTema,
     deleteTema,
-    clearError,
+    setTemas,
   };
 };

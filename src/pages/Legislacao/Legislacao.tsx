@@ -7,35 +7,40 @@ import Title from "../../components/Title";
 import TemasSection from "./Components/TemasSection";
 import { useLeis } from "../../hooks";
 import type { CreateLeiData } from "../../services";
+import { redirect } from "react-router-dom";
 
 const Legislacao: React.FC = () => {
   type ToggleType = "link" | "doc";
   const [toggleType, setToggleType] = useState<ToggleType>("link");
   const [nomeLei, setNomeLei] = useState("");
   const [url, setUrl] = useState("");
+  const [temasIds, setTemasIds] = useState<string[]>([]);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   // Hook personalizado
-  const { createLei, loading, error, clearError } = useLeis();
+  const { createLei, loading, clearError } = useLeis();
+
 
   const handleSubmit = async () => {
     try {
       clearError();
-
       const leiData: CreateLeiData = {
         nome: nomeLei,
         link: toggleType === "link" ? url : undefined,
         documento: toggleType === "doc" ? selectedFile : undefined,
+        temas: temasIds,
       };
-
+      console.log("Dados da lei a serem enviados:", leiData);
       const novaLei = await createLei(leiData);
 
       if (novaLei) {
-        console.log("Lei criada com sucesso:", novaLei);
         // Resetar formulário ou redirecionar
         setNomeLei("");
         setUrl("");
         setSelectedFile(null);
+        setTemasIds([]);
+        setToggleType("link");
+        redirect("/");
       }
     } catch (err) {
       console.error("Erro no submit:", err);
@@ -110,12 +115,8 @@ const Legislacao: React.FC = () => {
 
           {/* Seção Temas */}
 
-          <TemasSection />
-          {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-              {error}
-            </div>
-          )}
+          <TemasSection setTemasIds={setTemasIds} temasIds={temasIds} />
+          
           {/* Botão Salvar */}
           <div className="py-6 w-full flex justify-center">
             <Button

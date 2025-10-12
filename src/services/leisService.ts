@@ -16,12 +16,15 @@ export interface Lei {
 export interface CreateLeiData {
   nome: string;
   link?: string;
-  documento?: File |null | undefined;
+  documento?: File | null | undefined;
+  temas: number[] | string[];
 }
 
 export interface UpdateLeiData {
   nome?: string;
   link?: string;
+  documento?: File | null | undefined;
+  temas?: number[] | string[];
 }
 
 const leisService = {
@@ -48,18 +51,20 @@ const leisService = {
   },
 
   // POST /api/leis - Criar nova lei (com upload de documento)
-  create: async (leiData: CreateLeiData): Promise<Lei> => {
+  create: async (leiData: CreateLeiData | FormData): Promise<Lei> => {
     try {
-      const formData = new FormData();
-      formData.append('nome', leiData.nome);
-      formData.append('link', leiData.link || '');
-      
-      // Se tem arquivo, adiciona ao FormData
-      if (leiData.documento) {
-        formData.append('documento', leiData.documento);
+      let payload: FormData;
+      if (leiData instanceof FormData) {
+        payload = leiData;
+      } else {
+        payload = new FormData();
+        payload.append('nome', leiData.nome);
+        payload.append('link', leiData.link || '');
+        if (leiData.documento) payload.append('documento', leiData.documento);
+        if (leiData.temas) payload.append('temas', JSON.stringify(leiData.temas));
       }
 
-      const response = await axios.post(`${API_BASE_URL}/leis`, formData, {
+      const response = await axios.post(`${API_BASE_URL}/leis`, payload, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -72,8 +77,29 @@ const leisService = {
   },
 
   // PUT /api/leis/:id - Atualizar lei
-  update: async (id: string, leiData: UpdateLeiData): Promise<Lei> => {
+  update: async (id: string, leiData: UpdateLeiData | FormData): Promise<Lei> => {
     try {
+      if (leiData instanceof FormData) {
+        const response = await axios.put(`${API_BASE_URL}/leis/${id}`, leiData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        return response.data;
+      }
+
+      // leiData is UpdateLeiData
+      if (leiData.documento || leiData.temas) {
+        const fd = new FormData();
+        if (leiData.nome) fd.append('nome', leiData.nome);
+        if (leiData.link) fd.append('link', leiData.link);
+        if (leiData.documento) fd.append('documento', leiData.documento);
+        if (leiData.temas) fd.append('temas', JSON.stringify(leiData.temas));
+
+        const response = await axios.put(`${API_BASE_URL}/leis/${id}`, fd, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        return response.data;
+      }
+
       const response = await axios.put(`${API_BASE_URL}/leis/${id}`, leiData);
       return response.data;
     } catch (error) {

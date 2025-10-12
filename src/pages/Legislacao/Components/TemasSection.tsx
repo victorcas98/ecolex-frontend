@@ -6,9 +6,16 @@ import Label from "../../../components/LAbel";
 import { useTemas } from "../../../hooks";
 import { useAppContext } from "../../../contexts/AppContext";
 
-const TemasSection: React.FC = () => {
-  const [showInput, setShowInput] = useState(false);
-  const { temas, getAllTemas, createTema, deleteTema, error } = useTemas();
+interface TemasSectionProps {
+  setTemasIds: React.Dispatch<React.SetStateAction<string[]>>;
+  temasIds: string[];
+}
+
+const TemasSection: React.FC<TemasSectionProps> = ({
+  setTemasIds,
+  temasIds,
+}) => {
+  const { temas, getAllTemas, createTema, error } = useTemas();
   const { showError } = useAppContext();
 
   React.useEffect(() => {
@@ -18,13 +25,51 @@ const TemasSection: React.FC = () => {
   React.useEffect(() => {
     getAllTemas();
   }, [getAllTemas]);
-  const [dropDownText, setDropDownText] = useState<"+ Criar novo tema" | "Registrar tema">("+ Criar novo tema");
-  const [selectedTema, setSelectedTema] = useState<"primary" | "registerNewTheme">("primary");
+  const [dropDownText, setDropDownText] = useState<
+    "+ Criar novo tema" | "Registrar tema"
+  >("+ Criar novo tema");
+  const [selectedTema, setSelectedTema] = useState<
+    "primary" | "registerNewTheme"
+  >("primary");
   const [newTemaName, setNewTemaName] = useState("");
+  const temasToShow = React.useMemo(() => {
+    return temas
+      .filter((tema) => temasIds?.includes(String(tema.id)))
+      .map((tema) => (
+        <li
+          key={tema.id}
+          className="px-3 bg-custom-light-blue text-custom-green rounded-md"
+        >
+          <div className="flex justify-between items-center">
+            <Label theme="secundary" text={tema.nome} />
+            <Button
+              theme="transparent"
+              onClick={() =>
+                setTemasIds((prev) =>
+                  prev.filter((id) => id !== String(tema.id))
+                )
+              }
+            >
+              - Remover tema
+            </Button>
+          </div>
+          <div className="px-2">
+            <Label text="Requisitos" />
+            <RequisitosSection temaId={String(tema.id)} />
+          </div>
+        </li>
+      ));
+  }, [setTemasIds, temas, temasIds]);
 
   const handleThemeDropdownClick = () => {
     if (dropDownText === "Registrar tema") {
-      createTema({ nome: newTemaName}).then(() => {
+      createTema({ nome: newTemaName }).then((novoTema) => {
+        // If creation returned the new tema, add it to the selected temasIds
+        if (novoTema) {
+          setTemasIds((prev) =>
+            prev.includes(String(novoTema.id)) ? prev : [...prev, String(novoTema.id)]
+          );
+        }
         setSelectedTema("primary");
         setDropDownText("+ Criar novo tema");
         setNewTemaName("");
@@ -45,10 +90,6 @@ const TemasSection: React.FC = () => {
       <Label text="Tema(s)" />
       {/* Seleção de tema existente */}
       <div className="space-y-2">
-        <Button onClick={() => setShowInput(!showInput)} disabled={showInput}>
-          + Adicionar tema
-        </Button>
-        {showInput && (
           <Dropdown
             theme={selectedTema}
             isClickable
@@ -57,31 +98,20 @@ const TemasSection: React.FC = () => {
             clickText={newTemaName}
             clickTextOnChange={(e) => setNewTemaName(e.target.value)}
             items={temasDropdownItems}
-            onSelect={() => setShowInput(false)}
+            onSelect={(item) => {
+              setTemasIds((prev) =>
+                prev.includes(item.value as string)
+                  ? prev
+                  : [...prev, item.value as string]
+              );
+            }}
             placeholder="Selecione um tema"
           />
-        )}
       </div>
       {/* Lista de temas adicionados */}
-      {temas.length > 0 && (
+      {temasIds?.length !== undefined && temasIds?.length > 0 && (
         <div className="space-y-2 pt-3">
-          <ul className="space-y-1">
-            {temas.map((tema) => (
-              <li
-                key={tema.id}
-                className="px-3 bg-custom-light-blue text-custom-green rounded-md"
-              >
-                <div className="flex justify-between items-center">
-                  <Label theme="secundary" text={tema.nome} />
-                  <Button theme="transparent" onClick={() => deleteTema(tema.id)}>- Remover tema</Button>
-                </div>
-                <div className="px-2">
-                  <Label text="Requisitos" />
-                  <RequisitosSection temaId={String(tema.id)} />
-                </div>
-              </li>
-            ))}
-          </ul>
+          <ul className="space-y-1">{temasToShow}</ul>
         </div>
       )}
     </div>
