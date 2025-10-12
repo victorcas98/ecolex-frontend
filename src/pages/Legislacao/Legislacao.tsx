@@ -5,10 +5,43 @@ import TextInput from "../../components/TextInput";
 import ToggleButton from "../../components/ToggleButton";
 import Title from "../../components/Title";
 import TemasSection from "./Components/TemasSection";
+import { useLeis } from "../../hooks";
+import type { CreateLeiData } from "../../services";
 
 const Legislacao: React.FC = () => {
   type ToggleType = "link" | "doc";
   const [toggleType, setToggleType] = useState<ToggleType>("link");
+  const [nomeLei, setNomeLei] = useState("");
+  const [url, setUrl] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  // Hook personalizado
+  const { createLei, loading, error, clearError } = useLeis();
+
+  const handleSubmit = async () => {
+    try {
+      clearError();
+
+      const leiData: CreateLeiData = {
+        nome: nomeLei,
+        link: toggleType === "link" ? url : undefined,
+        documento: toggleType === "doc" ? selectedFile : undefined,
+      };
+
+      const novaLei = await createLei(leiData);
+
+      if (novaLei) {
+        console.log("Lei criada com sucesso:", novaLei);
+        // Resetar formulário ou redirecionar
+        setNomeLei("");
+        setUrl("");
+        setSelectedFile(null);
+      }
+    } catch (err) {
+      console.error("Erro no submit:", err);
+    }
+  };
+
   return (
     <div className="w-full h-screen">
       <div className="space-y-6">
@@ -19,8 +52,8 @@ const Legislacao: React.FC = () => {
           {/* Nome da Lei */}
           <Label text="Nome da Lei" />
           <TextInput
-            value={"nomeLei"}
-            onChange={() => {}}
+            value={nomeLei}
+            onChange={setNomeLei}
             placeholder="Digite o nome da legislação"
           />
 
@@ -29,7 +62,7 @@ const Legislacao: React.FC = () => {
             <Label text="Origem" />
             <div className="flex space-x-2">
               <ToggleButton
-                selected
+                selected={toggleType === "link"}
                 onClick={() => {
                   setToggleType("link");
                 }}
@@ -37,7 +70,7 @@ const Legislacao: React.FC = () => {
                 Link
               </ToggleButton>
               <ToggleButton
-                selected={false}
+                selected={toggleType === "doc"}
                 onClick={() => {
                   setToggleType("doc");
                 }}
@@ -51,8 +84,8 @@ const Legislacao: React.FC = () => {
 
           {toggleType === "link" ? (
             <TextInput
-              value={"url"}
-              onChange={() => {}}
+              value={url}
+              onChange={setUrl}
               placeholder="https://..."
             />
           ) : (
@@ -64,6 +97,7 @@ const Legislacao: React.FC = () => {
                   const file = e.target.files?.[0];
                   if (file) {
                     console.log("Arquivo selecionado:", file.name);
+                    setSelectedFile(file);
                   }
                 }}
                 className="w-full rounded-md file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-custom-blue file:text-custom-light-blue hover:file:bg-blue-600 cursor-pointer"
@@ -77,11 +111,19 @@ const Legislacao: React.FC = () => {
           {/* Seção Temas */}
 
           <TemasSection />
-
+          {error && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+              {error}
+            </div>
+          )}
           {/* Botão Salvar */}
           <div className="py-6 w-full flex justify-center">
-            <Button disabled className="w-[40%]" onClick={() => {}}>
-              Cadastrar
+            <Button
+              disabled={loading}
+              className="w-[40%]"
+              onClick={handleSubmit}
+            >
+              {loading ? "Cadastrando..." : "Cadastrar"}
             </Button>
           </div>
         </div>

@@ -3,23 +3,43 @@ import Button from "../../../components/Button";
 import Dropdown from "../../../components/Dropdown";
 import RequisitosSection from "./Requisitos";
 import Label from "../../../components/LAbel";
+import { useTemas } from "../../../hooks";
+import { useAppContext } from "../../../contexts/AppContext";
 
 const TemasSection: React.FC = () => {
   const [showInput, setShowInput] = useState(false);
+  const { temas, getAllTemas, createTema, deleteTema, error } = useTemas();
+  const { showError } = useAppContext();
 
-  interface Tema {
-    id: string;
-    nome: string;
-  }
+  React.useEffect(() => {
+    if (error) showError(error);
+  }, [error, showError]);
 
-  const [temas, setTemas] = useState<Tema[]>([
-    
-  ]);
+  React.useEffect(() => {
+    getAllTemas();
+  }, [getAllTemas]);
+  const [dropDownText, setDropDownText] = useState<"+ Criar novo tema" | "Registrar tema">("+ Criar novo tema");
+  const [selectedTema, setSelectedTema] = useState<"primary" | "registerNewTheme">("primary");
+  const [newTemaName, setNewTemaName] = useState("");
 
-    const temasDropdownItems = temas.map(tema => ({
+  const handleThemeDropdownClick = () => {
+    if (dropDownText === "Registrar tema") {
+      createTema({ nome: newTemaName}).then(() => {
+        setSelectedTema("primary");
+        setDropDownText("+ Criar novo tema");
+        setNewTemaName("");
+        getAllTemas();
+      });
+    } else {
+      setSelectedTema("registerNewTheme");
+      setDropDownText("Registrar tema");
+    }
+  };
+  const temasDropdownItems = temas.map((tema) => ({
     label: tema.nome,
-    value: tema.id
+    value: String(tema.id),
   }));
+
   return (
     <div>
       <Label text="Tema(s)" />
@@ -30,9 +50,12 @@ const TemasSection: React.FC = () => {
         </Button>
         {showInput && (
           <Dropdown
+            theme={selectedTema}
             isClickable
-            clickAction={() => {}}
-            clickText="+ Criar novo tema"
+            clickAction={handleThemeDropdownClick}
+            clickTextPlaceholder={dropDownText}
+            clickText={newTemaName}
+            clickTextOnChange={(e) => setNewTemaName(e.target.value)}
             items={temasDropdownItems}
             onSelect={() => setShowInput(false)}
             placeholder="Selecione um tema"
@@ -48,10 +71,13 @@ const TemasSection: React.FC = () => {
                 key={tema.id}
                 className="px-3 bg-custom-light-blue text-custom-green rounded-md"
               >
-                <Label theme="secundary" text={tema.nome} />
+                <div className="flex justify-between items-center">
+                  <Label theme="secundary" text={tema.nome} />
+                  <Button theme="transparent" onClick={() => deleteTema(tema.id)}>- Remover tema</Button>
+                </div>
                 <div className="px-2">
                   <Label text="Requisitos" />
-                  <RequisitosSection temaId={"tema"} />
+                  <RequisitosSection temaId={String(tema.id)} />
                 </div>
               </li>
             ))}

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from "react";
 
 interface DropdownItem {
   label: string;
@@ -13,9 +13,13 @@ interface DropdownProps {
   isClickable?: boolean;
   clickText?: string;
   clickAction?: () => void;
+  theme?: "primary" | "registerNewTheme";
+  clickTextPlaceholder?: string;
+  clickTextOnChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const Dropdown: React.FC<DropdownProps> = ({
+  theme,
   items,
   selectedItem,
   onSelect,
@@ -23,19 +27,24 @@ const Dropdown: React.FC<DropdownProps> = ({
   clickAction = () => {},
   clickText,
   placeholder = "Selecione um item",
+  clickTextPlaceholder = "Clique aqui",
+  clickTextOnChange = () => {},
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const handleItemSelect = (item: DropdownItem) => {
@@ -50,7 +59,11 @@ const Dropdown: React.FC<DropdownProps> = ({
         className="w-full p-1 bg-white border border-custom-blue rounded-md text-left flex justify-between items-center hover:bg-gray-50 transition-colors"
       >
         <span>{selectedItem ? selectedItem.label : placeholder}</span>
-        <span className={`text-custom-green transform transition-transform ${isOpen ? 'rotate-180' : ''}`}>
+        <span
+          className={`text-custom-green transform transition-transform ${
+            isOpen ? "rotate-180" : ""
+          }`}
+        >
           ▼
         </span>
       </button>
@@ -59,13 +72,19 @@ const Dropdown: React.FC<DropdownProps> = ({
         <div className="absolute z-10 w-full mt-1 bg-white border border-custom-blue rounded-md shadow-lg max-h-60 overflow-auto">
           <ul className="px-3 py-1 ">
             {isClickable && (
-              <li className='text-custom-green'>
-              <button
-                onClick={clickAction}
-              >
-                {clickText}
-              </button>
-            </li>)}
+              <li className="text-custom-green">
+                {theme === "registerNewTheme" && (
+                  <input
+                    value={clickText}
+                    onChange={clickTextOnChange}
+                    placeholder="digite o nome do seu novo tema"
+                    type="text"
+                    className="w-full p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-custom-green"
+                  />
+                )}
+                <button onClick={clickAction}>{clickTextPlaceholder}</button>
+              </li>
+            )}
             {items.map((item) => (
               <li key={item.value}>
                 <button

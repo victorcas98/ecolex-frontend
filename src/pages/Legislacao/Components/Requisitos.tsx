@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Button from "../../../components/Button";
 import TextInput from "../../../components/TextInput";
+import { useTemas } from "../../../hooks";
 
 interface RequisitosSectionProps {
   temaId?: string;
@@ -9,13 +10,29 @@ interface RequisitosSectionProps {
 const RequisitosSection: React.FC<RequisitosSectionProps> = ({ temaId }) => {
   const [novoRequisito, setNovoRequisito] = useState("");
   const [showInput, setShowInput] = useState(false);
+  const { getTemaById } = useTemas();
+  const [requisitosDoTema, setRequisitosDoTema] = useState<{
+    id: number | string;
+    descricao: string;
+    temaId: number | string;
+  }[]>([]);
 
-  const requisitosDoTema = [
-    { id: "req1", descricao: "Requisito 1", temaId: "tema" },
-    { id: "req2", descricao: "Requisito 2", temaId: "tema" },
-  ]; // Mocked data
+  useEffect(() => {
+    let mounted = true;
+    const load = async () => {
+      if (!temaId) return setRequisitosDoTema([]);
+      const tema = await getTemaById(temaId);
+      if (!mounted) return;
+      setRequisitosDoTema(tema?.requisitos || []);
+    };
+    load();
+    return () => { mounted = false };
+  }, [temaId, getTemaById]);
 
-  const handleAddRequisito = () => {};
+  const handleAddRequisito = () => {
+    // TODO: call requisitosService.create(...) then refresh tema requisitos
+    console.log('Adicionar requisito (pendente):', novoRequisito, temaId);
+  };
   return (
     <div className={"px-2"}>
       {/* Lista de requisitos */}

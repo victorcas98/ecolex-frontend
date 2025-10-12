@@ -21,7 +21,7 @@ const Home: React.FC = () => {
         </div>
       ))}
       <div className="flex justify-end my-6 mx-10">
-        <Button theme="secundary" onClick={() => {}} >
+        <Button theme="secondary" onClick={() => {}} >
           Cadastrar novo projeto
         </Button>
       </div>
