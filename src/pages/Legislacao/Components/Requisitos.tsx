@@ -12,13 +12,13 @@ const RequisitosSection: React.FC<RequisitosSectionProps> = ({ temaId }) => {
   const [showInput, setShowInput] = useState(false);
   const { getTemaById } = useTemas();
   const { requisitos, getByTema, createRequisito, loading } = useRequisitos();
-
+console.log("Requisitos carregados:", requisitos, 'temaId:', temaId);
   useEffect(() => {
     getByTema(temaId);
   }, [temaId, getByTema]);
 
   const handleAddRequisito = async () => {
-    const criado = await createRequisito({ descricao: novoRequisito, temaId });
+    const criado = await createRequisito({ nome: novoRequisito, temaId });
     if (criado) {
       // Optionally refresh tema details (keeps source-of-truth in temas hook)
       await getTemaById(temaId);
@@ -34,7 +34,7 @@ const RequisitosSection: React.FC<RequisitosSectionProps> = ({ temaId }) => {
           <ul className="space-y-1">
             {requisitos.map((requisito) => (
               <li key={requisito.id} className="">
-                {requisito.descricao}
+                {requisito.nome}
               </li>
             ))}
           </ul>

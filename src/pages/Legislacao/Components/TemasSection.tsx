@@ -33,6 +33,7 @@ const TemasSection: React.FC<TemasSectionProps> = ({
   >("primary");
   const [newTemaName, setNewTemaName] = useState("");
   const temasToShow = React.useMemo(() => {
+    console.log("Temas disponíveis:", temas);
     return temas
       .filter((tema) => temasIds?.includes(String(tema.id)))
       .map((tema) => (

@@ -7,8 +7,8 @@ interface UseRequisitos {
   requisitos: Requisito[];
   loading: boolean;
   getByTema: (temaId: string | number) => Promise<void>;
-  createRequisito: (data: { descricao: string; temaId: string | number }) => Promise<Requisito | null>;
-  updateRequisito: (id: string | number, descricao: string) => Promise<Requisito | null>;
+  createRequisito: (data: { nome: string; temaId: string; leisIds?: string[] }) => Promise<Requisito | null>;
+  updateRequisito: (id: string | number, data: { nome: string; leisIds?: string[] }) => Promise<Requisito | null>;
   deleteRequisito: (id: string | number) => Promise<boolean>;
   clearError: () => void;
 }
@@ -35,7 +35,7 @@ export const useRequisitos = (): UseRequisitos => {
     }
   }, [showError]);
 
-  const createRequisito = useCallback(async (data: { descricao: string; temaId: string | number }) => {
+  const createRequisito = useCallback(async (data: { nome: string; temaId: string; leisIds?: string[] }) => {
     try {
       setLoading(true);
       const novo = await requisitosService.create(data);
@@ -52,10 +52,10 @@ export const useRequisitos = (): UseRequisitos => {
     }
   }, [showError, showSuccess]);
 
-  const updateRequisito = useCallback(async (id: string | number, descricao: string) => {
+  const updateRequisito = useCallback(async (id: string | number, data: { nome: string; leisIds?: string[] }) => {
     try {
       setLoading(true);
-      const atualizado = await requisitosService.update(id, descricao);
+      const atualizado = await requisitosService.update(id, data);
       setRequisitos(prev => prev.map(r => (r.id === id ? atualizado : r)));
       showSuccess('Requisito atualizado');
       return atualizado;

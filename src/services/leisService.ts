@@ -1,30 +1,28 @@
 import axios from 'axios';
 import { API_BASE_URL } from './api';
 
-// Tipos para a lei
+// Tipos para a lei conforme nova API
 export interface Lei {
-  id: number | string;
+  id: string;
   nome: string;
-  link?: string;
-  documento?: string | null;
-  temas?: number[]; // ids
-  temasDetalhes?: { id: number | string; nome: string }[]; // expanded temas
-  createdAt?: string;
-  updatedAt?: string;
+  requisitosIds: string[];
+  temasIds: string[];
 }
 
 export interface CreateLeiData {
   nome: string;
   link?: string;
   documento?: File | null | undefined;
-  temas: number[] | string[];
+  temasIds: string[];
+  requisitosIds?: string[];
 }
 
 export interface UpdateLeiData {
   nome?: string;
   link?: string;
   documento?: File | null | undefined;
-  temas?: number[] | string[];
+  temasIds?: string[];
+  requisitosIds?: string[];
 }
 
 const leisService = {
@@ -59,9 +57,23 @@ const leisService = {
       } else {
         payload = new FormData();
         payload.append('nome', leiData.nome);
-        payload.append('link', leiData.link || '');
+        if (leiData.link && leiData.link.trim()) {
+          // Adicionar http:// se não tiver protocolo
+          const link = leiData.link.startsWith('http') ? leiData.link : `http://${leiData.link}`;
+          payload.append('link', link);
+        }
         if (leiData.documento) payload.append('documento', leiData.documento);
-        if (leiData.temas) payload.append('temas', JSON.stringify(leiData.temas));
+        payload.append('temas', JSON.stringify(leiData.temasIds));
+      }
+
+      // Log do payload que será enviado (útil para debug)
+      console.log('Payload (FormData) entries:');
+      for (const [key, value] of payload.entries()) {
+        if (value instanceof File) {
+          console.log(key, { name: value.name, type: value.type, size: value.size });
+        } else {
+          console.log(key, value);
+        }
       }
 
       const response = await axios.post(`${API_BASE_URL}/leis`, payload, {
@@ -87,12 +99,13 @@ const leisService = {
       }
 
       // leiData is UpdateLeiData
-      if (leiData.documento || leiData.temas) {
+      if (leiData.documento || leiData.temasIds || leiData.requisitosIds) {
         const fd = new FormData();
         if (leiData.nome) fd.append('nome', leiData.nome);
         if (leiData.link) fd.append('link', leiData.link);
         if (leiData.documento) fd.append('documento', leiData.documento);
-        if (leiData.temas) fd.append('temas', JSON.stringify(leiData.temas));
+        if (leiData.temasIds) fd.append('temas', JSON.stringify(leiData.temasIds));
+        if (leiData.requisitosIds) fd.append('requisitosIds', JSON.stringify(leiData.requisitosIds));
 
         const response = await axios.put(`${API_BASE_URL}/leis/${id}`, fd, {
           headers: { 'Content-Type': 'multipart/form-data' },

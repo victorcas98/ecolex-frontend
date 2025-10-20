@@ -1,23 +1,18 @@
 import axios from 'axios';
 import { API_BASE_URL } from './api';
 
-// Tipos para tema (opcionalmente usar interfaces reais conforme backend)
-import type { Lei } from './leisService';
-
 export interface Requisito {
-  id: number | string;
-  descricao: string;
-  temaId: number | string;
+  id?: number | string;
+  nome: string;
+  temaId: string;
+  leisIds: string[];
 }
 
 export interface Tema {
-  id: string | number;
+  id?: string | number;
   nome: string;
-  // ids of linked laws (updated by backend)
-  leisIds?: number[];
-  // optional expanded relations returned by backend
-  leis?: Lei[];
-  requisitos?: Requisito[];
+  requisitosIds: string[];
+  leisIds: string[];
 }
 
 export interface CreateTemaData {
@@ -29,7 +24,7 @@ export interface UpdateTemaData {
 }
 
 const temasService = {
-  // GET /api/temas - Listar TODOS os temas com requisitos
+  // GET /api/temas - Listar todos os temas
   getAll: async (): Promise<Tema[]> => {
     try {
       const response = await axios.get(`${API_BASE_URL}/temas`);
@@ -40,35 +35,13 @@ const temasService = {
     }
   },
 
-  // GET /api/temas/:id - Buscar tema específico com requisitos
+  // GET /api/temas/:id - Buscar tema específico
   getById: async (id: string | number): Promise<Tema> => {
     try {
       const response = await axios.get(`${API_BASE_URL}/temas/${id}`);
       return response.data;
     } catch (error) {
       console.error(`Erro ao buscar tema ${id}:`, error);
-      throw error;
-    }
-  },
-
-  // GET /api/temas/lei/:leiId - Listar temas de uma lei específica
-  getByLeiId: async (leiId: string | number): Promise<Tema[]> => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/temas/lei/${leiId}`);
-      return response.data;
-    } catch (error) {
-      console.error(`Erro ao buscar temas da lei ${leiId}:`, error);
-      throw error;
-    }
-  },
-
-  // GET /api/temas/sem-lei - Listar temas sem lei associada
-  getSemLei: async (): Promise<Tema[]> => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/temas/sem-lei`);
-      return response.data;
-    } catch (error) {
-      console.error('Erro ao buscar temas sem lei:', error);
       throw error;
     }
   },

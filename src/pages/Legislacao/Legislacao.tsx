@@ -7,7 +7,6 @@ import Title from "../../components/Title";
 import TemasSection from "./Components/TemasSection";
 import { useLeis } from "../../hooks";
 import type { CreateLeiData } from "../../services";
-import { redirect } from "react-router-dom";
 
 const Legislacao: React.FC = () => {
   type ToggleType = "link" | "doc";
@@ -28,19 +27,19 @@ const Legislacao: React.FC = () => {
         nome: nomeLei,
         link: toggleType === "link" ? url : undefined,
         documento: toggleType === "doc" ? selectedFile : undefined,
-        temas: temasIds,
+        temasIds,
       };
-      console.log("Dados da lei a serem enviados:", leiData);
       const novaLei = await createLei(leiData);
 
       if (novaLei) {
-        // Resetar formulário ou redirecionar
+        // Resetar formulário
         setNomeLei("");
         setUrl("");
         setSelectedFile(null);
         setTemasIds([]);
         setToggleType("link");
-        redirect("/");
+        // Redirecionar para a página inicial
+        window.location.href = "/";
       }
     } catch (err) {
       console.error("Erro no submit:", err);
@@ -120,7 +119,12 @@ const Legislacao: React.FC = () => {
           {/* Botão Salvar */}
           <div className="py-6 w-full flex justify-center">
             <Button
-              disabled={loading}
+              disabled={
+                loading ||
+                nomeLei.trim().length < 3 ||
+                temasIds.length < 1 ||
+                (toggleType === "link" ? url.trim().length < 5 : selectedFile === null) // url mínimo 10 chars ou arquivo selecionado
+              }
               className="w-[40%]"
               onClick={handleSubmit}
             >
