@@ -14,7 +14,7 @@ const Navigation: React.FC = () => {
       <ul className="space-y-4 ">
         <NavigationItem label="Home" destiny="/" />
         <NavigationItem label="Dashboard" destiny="/dashboard" />
-        <NavigationItem label="Novo projeto" destiny="/novo-projeto" />
+        <NavigationItem label="Novo projeto" destiny="/projeto" />
         <NavigationItem label="Legislação" destiny="/legislacao" />
       </ul>
     </nav>
