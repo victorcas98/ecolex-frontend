@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Button from "../../components/Button";
-import Label from "../../components/LAbel";
+import Label from "../../components/Label";
 import TextInput from "../../components/TextInput";
 import ToggleButton from "../../components/ToggleButton";
 import Title from "../../components/Title";

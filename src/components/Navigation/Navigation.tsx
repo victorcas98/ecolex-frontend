@@ -12,10 +12,10 @@ const Navigation: React.FC = () => {
       
       {/* Menu Items */}
       <ul className="space-y-4 ">
-        <NavigationItem label="Home" destiny="/" />
-        <NavigationItem label="Dashboard" destiny="/dashboard" />
+        <NavigationItem label="Projetos" destiny="/" />
         <NavigationItem label="Novo projeto" destiny="/projeto" />
         <NavigationItem label="Legislação" destiny="/legislacao" />
+        <NavigationItem label="Sobre EcoLex" destiny="/sobre" />
       </ul>
     </nav>
   );

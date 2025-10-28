@@ -12,13 +12,13 @@ const RequisitoCard: React.FC<RequisitoCardProps> = ({ requisito, onRegistrarEvi
   // Determinar cor e ícone baseado no status
   const getStatusConfig = (status: string) => {
     switch (status) {
-      case 'sim':
+      case 'concluido':
         return {
           borderColor: 'border-green-500',
           bgColor: 'bg-green-50',
           textColor: 'text-green-600',
           icon: '✓',
-          statusText: 'Atendido'
+          statusText: 'Concluído'
         };
       case 'pendente':
         return {
@@ -30,11 +30,11 @@ const RequisitoCard: React.FC<RequisitoCardProps> = ({ requisito, onRegistrarEvi
         };
       default:
         return {
-          borderColor: 'border-red-500',
-          bgColor: 'bg-red-50',
-          textColor: 'text-red-600',
-          icon: '✕',
-          statusText: 'Não atendido'
+          borderColor: 'border-gray-500',
+          bgColor: 'bg-gray-50',
+          textColor: 'text-gray-600',
+          icon: '?',
+          statusText: 'Desconhecido'
         };
     }
   };

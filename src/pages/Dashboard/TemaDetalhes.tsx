@@ -16,29 +16,29 @@ const RequisitoCard: React.FC<RequisitoCardProps> = ({ requisito, onRegistrarEvi
 
   const getStatusConfig = (status: string) => {
     switch (status) {
-      case 'sim':
+      case 'concluido':
         return {
           borderColor: 'border-green-500',
           bgColor: 'bg-green-50',
           textColor: 'text-green-600',
           icon: '✓',
-          statusText: 'Atendido'
+          statusText: 'Concluído'
         };
       case 'pendente':
         return {
-          borderColor: 'border-yellow-500',
-          bgColor: 'bg-yellow-50',
-          textColor: 'text-yellow-600',
+          borderColor: 'border-red-500',
+          bgColor: 'bg-red-50',
+          textColor: 'text-red-600',
           icon: '⏳',
           statusText: 'Pendente'
         };
       default:
         return {
-          borderColor: 'border-red-500',
-          bgColor: 'bg-red-50',
-          textColor: 'text-red-600',
-          icon: '✕',
-          statusText: 'Não atendido'
+          borderColor: 'border-gray-500',
+          bgColor: 'bg-gray-50',
+          textColor: 'text-gray-600',
+          icon: '?',
+          statusText: 'Desconhecido'
         };
     }
   };
@@ -94,7 +94,7 @@ const RequisitoCard: React.FC<RequisitoCardProps> = ({ requisito, onRegistrarEvi
               onClick={() => onRegistrarEvidencia(requisito)}
               className="text-gray-500 underline hover:text-gray-700 text-sm"
             >
-              Registrar nova
+              {requisito.evidencia ? 'Editar' : 'Registrar nova'}
             </button>
           </div>
         </div>
@@ -123,15 +123,8 @@ const TemaDetalhes: React.FC = () => {
   // Calcular porcentagem do tema
   const calcularPorcentagem = () => {
     if (requisitos.length === 0) return 0;
-    const pontuacaoTotal = requisitos.reduce((acc, req) => {
-      switch (req.status) {
-        case 'sim': return acc + 2;
-        case 'pendente': return acc + 1;
-        default: return acc;
-      }
-    }, 0);
-    const pontuacaoMaxima = requisitos.length * 2;
-    return Math.round((pontuacaoTotal / pontuacaoMaxima) * 100);
+    const requisitosConcluidos = requisitos.filter(req => req.status === 'concluido').length;
+    return Math.round((requisitosConcluidos / requisitos.length) * 100);
   };
 
   const handleRegistrarEvidencia = (requisito: RequisitoStatus) => {
@@ -194,8 +187,8 @@ const TemaDetalhes: React.FC = () => {
           requisito={requisitoSelecionado}
           onClose={handleFecharModal}
           onSave={async (evidencia: string, data: string, anexos: File[]) => {
-            if (id && temaNome) {
-              const sucesso = await salvarEvidencia(id, temaNome, requisitoSelecionado.nome, {
+            if (id && tema?.id) {
+              const sucesso = await salvarEvidencia(id, tema.id, requisitoSelecionado.id, {
                 evidencia,
                 data,
                 anexos

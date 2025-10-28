@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Button from "../../components/Button";
-import Label from "../../components/LAbel";
+import Label from "../../components/Label";
 import TextInput from "../../components/TextInput";
 import Title from "../../components/Title";
 import ExpandableSection from "../../components/ExpandableSection";
@@ -10,12 +10,12 @@ import { useProjetos } from "../../hooks/useProjetos";
 import { useTemas, useRequisitos } from "../../hooks";
 import type { Requisito } from "../../services/requisitosService";
 
-interface RequisitoStatus {
-  [requisitoId: string]: 'sim' | 'nao' | null;
+interface RequisitoSelecionado {
+  [requisitoId: string]: boolean; // ✅ true = incluir no projeto
 }
 
 interface TemasStatus {
-  [temaId: string]: RequisitoStatus;
+  [temaId: string]: RequisitoSelecionado;
 }
 
 interface RequisitosPorTema {
@@ -32,6 +32,13 @@ const CadastroProjeto: React.FC = () => {
   const { createProjeto, loading, clearError } = useProjetos();
   const { temas, getAllTemas } = useTemas();
   const { requisitos, getByTema } = useRequisitos();
+
+  // Função para verificar se há pelo menos um requisito selecionado
+  const temRequisitoSelecionado = () => {
+    return Object.values(temasStatus).some(tema => 
+      Object.values(tema).some(selecionado => selecionado === true)
+    );
+  };
 
   // Carregar temas ao montar o componente
   useEffect(() => {
@@ -62,13 +69,13 @@ const CadastroProjeto: React.FC = () => {
   const handleRequisitoChange = (
     temaId: string,
     requisitoId: string,
-    novoStatus: 'sim' | 'nao' | null
+    selecionado: boolean
   ) => {
     setTemasStatus(prev => ({
       ...prev,
       [temaId]: {
         ...prev[temaId],
-        [requisitoId]: novoStatus
+        [requisitoId]: selecionado
       }
     }));
   };
@@ -83,30 +90,32 @@ const CadastroProjeto: React.FC = () => {
       }
 
       // Construir a estrutura completa do projeto com temas e requisitos
-      const temasCompletos = temas.map(tema => {
-        const temaId = String(tema.id);
-        const statusDoTema = temasStatus[temaId] || {};
-        
-        // Usar os requisitos salvos localmente para este tema
-        const requisitosDoTema = requisitosPorTema[temaId] || [];
-        
-        // Filtrar apenas requisitos marcados como "sim"
-        const requisitosCompletos = requisitosDoTema
-          .filter(requisito => statusDoTema[String(requisito.id)] === 'sim')
-          .map(requisito => ({
-            id: String(requisito.id), // ID do requisito
-            nome: requisito.nome,
-            status: 'nao', // Todos começam com status "nao"
-            evidencia: '', // String vazia inicialmente
-            anexo: [], // Array vazio de arquivos (até 3)
-            leisIds: tema.leisIds || [] // leisIds vem do tema, não do requisito individual
-          }));
+      const temasCompletos = temas
+        .map(tema => {
+          const temaId = String(tema.id);
+          const statusDoTema = temasStatus[temaId] || {};
+          
+          // Usar os requisitos salvos localmente para este tema
+          const requisitosDoTema = requisitosPorTema[temaId] || [];
+          
+          // ✅ Filtrar apenas requisitos SELECIONADOS (marcados para incluir)
+          const requisitosCompletos = requisitosDoTema
+            .filter(requisito => statusDoTema[String(requisito.id)] === true)
+            .map(requisito => ({
+              id: String(requisito.id), // ID do requisito
+              nome: requisito.nome,
+              status: 'pendente' as const, // ✅ Todos começam com status "pendente"
+              evidencia: '', // String vazia inicialmente
+              anexo: [] as File[], // Array vazio de arquivos (até 3)
+              leisIds: tema.leisIds || [] // leisIds vem do tema, não do requisito individual
+            }));
 
-        return {
-          nome: tema.nome,
-          requisitos: requisitosCompletos
-        };
-      });
+          return {
+            nome: tema.nome,
+            requisitos: requisitosCompletos
+          };
+        })
+        .filter(tema => tema.requisitos.length > 0); // Filtrar apenas temas com requisitos selecionados
 
       const projetoCompleto = {
         nome: nomeProjeto,
@@ -145,8 +154,8 @@ const CadastroProjeto: React.FC = () => {
           <RequisitoItem
             key={requisito.id}
             nome={requisito.nome}
-            status={statusDoTema[String(requisito.id)] || null}
-            onChange={(novoStatus) => handleRequisitoChange(temaId, String(requisito.id), novoStatus)}
+            selecionado={statusDoTema[String(requisito.id)] || false}
+            onChange={(selecionado) => handleRequisitoChange(temaId, String(requisito.id), selecionado)}
             disabled={loading}
           />
         ))}
@@ -197,7 +206,12 @@ const CadastroProjeto: React.FC = () => {
           {/* Botão Salvar */}
           <div className="py-6 w-full flex justify-center">
             <Button
-              disabled={loading || temas.length === 0 || nomeProjeto.length < 3}
+              disabled={
+                loading || 
+                temas.length === 0 || 
+                nomeProjeto.length < 3 || 
+                !temRequisitoSelecionado()
+              }
               className="w-[40%]"
               onClick={handleSubmit}
             >

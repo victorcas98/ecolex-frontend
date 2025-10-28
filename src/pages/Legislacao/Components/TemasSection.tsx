@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Button from "../../../components/Button";
 import Dropdown from "../../../components/Dropdown";
 import RequisitosSection from "./Requisitos";
-import Label from "../../../components/LAbel";
+import Label from "../../../components/Label";
 import { useTemas } from "../../../hooks";
 import { useAppContext } from "../../../contexts/AppContext";
 
@@ -42,7 +42,7 @@ const TemasSection: React.FC<TemasSectionProps> = ({
           className="px-3 bg-custom-light-blue text-custom-green rounded-md"
         >
           <div className="flex justify-between items-center">
-            <Label theme="secundary" text={tema.nome} />
+            <Label theme="secondary" text={tema.nome} />
             <Button
               theme="transparent"
               onClick={() =>
@@ -65,7 +65,6 @@ const TemasSection: React.FC<TemasSectionProps> = ({
   const handleThemeDropdownClick = () => {
     if (dropDownText === "Registrar tema") {
       createTema({ nome: newTemaName }).then((novoTema) => {
-        // If creation returned the new tema, add it to the selected temasIds
         if (novoTema) {
           setTemasIds((prev) =>
             prev.includes(String(novoTema.id)) ? prev : [...prev, String(novoTema.id)]
@@ -75,6 +74,10 @@ const TemasSection: React.FC<TemasSectionProps> = ({
         setDropDownText("+ Criar novo tema");
         setNewTemaName("");
         getAllTemas();
+
+        // fechar dropdown: remover foco e disparar clique fora (caso o Dropdown feche ao clicar fora)
+        if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+        setTimeout(() => document.body.click(), 0);
       });
     } else {
       setSelectedTema("registerNewTheme");

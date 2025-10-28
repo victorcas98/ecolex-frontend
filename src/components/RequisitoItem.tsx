@@ -3,14 +3,14 @@ import Button from "./Button";
 
 interface RequisitoItemProps {
   nome: string;
-  status: 'sim' | 'nao' | null;
-  onChange: (status: 'sim' | 'nao' | null) => void;
+  selecionado: boolean; // ✅ true = incluir no projeto, false = não incluir
+  onChange: (selecionado: boolean) => void;
   disabled?: boolean;
 }
 
 const RequisitoItem: React.FC<RequisitoItemProps> = ({
   nome,
-  status = 'nao',
+  selecionado = false,
   onChange,
   disabled = false
 }) => {
@@ -20,21 +20,12 @@ const RequisitoItem: React.FC<RequisitoItemProps> = ({
       
       <div className="flex space-x-2 ml-4">
         <Button
-          theme={status === 'sim' ? 'primary' : 'transparent'}
-          onClick={() => onChange(status === 'sim' ? null : 'sim')}
+          theme={selecionado ? 'primary' : 'transparent'}
+          onClick={() => onChange(!selecionado)}
           disabled={disabled}
           className="px-3 py-1 text-sm min-w-[50px]"
         >
-          Sim
-        </Button>
-        
-        <Button
-          theme={status === 'nao' ? 'primary' : 'transparent'}
-          onClick={() => onChange(status === 'nao' ? null : 'nao')}
-          disabled={disabled}
-          className="px-3 py-1 text-sm min-w-[50px]"
-        >
-          Não
+          {selecionado ? '✓ Incluir' : 'Incluir'}
         </Button>
       </div>
     </div>

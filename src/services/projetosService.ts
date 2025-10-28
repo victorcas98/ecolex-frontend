@@ -75,15 +75,15 @@ const projetosService = {
     }
   },
 
-  // POST /api/projetos/:id/temas/:temaNome/requisitos - Adicionar requisito
+  // POST /api/projetos/:id/temas/:temaId/requisitos - Adicionar requisito
   adicionarRequisito: async (
     projetoId: string, 
-    temaNome: string, 
+    temaId: string, 
     requisito: { nome: string; status?: string; leisIds?: string[] }
   ): Promise<Projeto> => {
     try {
       const response = await axios.post(
-        `${API_BASE_URL}/projetos/${projetoId}/temas/${encodeURIComponent(temaNome)}/requisitos`,
+        `${API_BASE_URL}/projetos/${projetoId}/temas/${temaId}/requisitos`,
         requisito
       );
       return response.data;
@@ -93,21 +93,120 @@ const projetosService = {
     }
   },
 
-  // PUT /api/projetos/:id/temas/:temaNome/requisitos/:requisitoNome - Atualizar requisito
+  // PUT /api/projetos/:id/temas/:temaId/requisitos/:requisitoId - Atualizar requisito
   atualizarRequisito: async (
     projetoId: string,
-    temaNome: string,
-    requisitoNome: string,
-    updates: { status?: string; leisIds?: string[] }
+    temaId: string,
+    requisitoId: string,
+    updates: { status?: string; leisIds?: string[]; dataValidade?: string }
   ): Promise<Projeto> => {
     try {
       const response = await axios.put(
-        `${API_BASE_URL}/projetos/${projetoId}/temas/${encodeURIComponent(temaNome)}/requisitos/${encodeURIComponent(requisitoNome)}`,
+        `${API_BASE_URL}/projetos/${projetoId}/temas/${temaId}/requisitos/${requisitoId}`,
         updates
       );
       return response.data;
     } catch (error) {
       console.error('Erro ao atualizar requisito:', error);
+      throw error;
+    }
+  },
+
+  // PUT /api/projetos/:id/temas/:temaId/requisitos/:requisitoId/evidencia - Salvar evidência
+  salvarEvidencia: async (
+    projetoId: string,
+    temaId: string,
+    requisitoId: string,
+    evidenciaData: { registro: string; anexos: File[] }
+  ): Promise<Projeto> => {
+    try {
+      const formData = new FormData();
+      formData.append('registro', evidenciaData.registro);
+      evidenciaData.anexos.forEach((arquivo) => {
+        formData.append('anexo', arquivo);
+      });
+
+      const response = await axios.post(
+        `${API_BASE_URL}/projetos/${projetoId}/temas/${temaId}/requisitos/${requisitoId}/evidencias`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao salvar evidência:', error);
+      throw error;
+    }
+  },
+
+  // PUT /api/projetos/:id/temas/:temaId/requisitos/:requisitoId/status - Atualizar status
+  atualizarStatusRequisito: async (
+    projetoId: string,
+    temaId: string,
+    requisitoId: string,
+    novoStatus: string
+  ): Promise<Projeto> => {
+    try {
+      const response = await axios.put(
+        `${API_BASE_URL}/projetos/${projetoId}/temas/${temaId}/requisitos/${requisitoId}`,
+        { status: novoStatus }
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao atualizar status do requisito:', error);
+      throw error;
+    }
+  },
+
+  // DELETE /api/projetos/:id/temas/:temaId/requisitos/:requisitoId - Remover requisito
+  removerRequisito: async (
+    projetoId: string,
+    temaId: string,
+    requisitoId: string
+  ): Promise<Projeto> => {
+    try {
+      const response = await axios.delete(
+        `${API_BASE_URL}/projetos/${projetoId}/temas/${temaId}/requisitos/${requisitoId}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao remover requisito:', error);
+      throw error;
+    }
+  },
+
+  // PUT /api/projetos/:id/editar-completo - Editar projeto completo
+  editarCompleto: async (
+    id: string, 
+    projetoCompleto: { 
+      nome: string; 
+      temas: Array<{
+        tema: string;
+        requisitos: Array<{
+          requisito: string;
+          status: string;
+          leis: string[];
+          evidencia?: string;
+          dataEvidencia?: string;
+          anexos?: string[];
+        }>;
+      }>;
+    }
+  ): Promise<Projeto> => {
+    try {
+      const response = await axios.put(
+        `${API_BASE_URL}/projetos/${id}/editar-completo`,
+        projetoCompleto,
+        {
+          headers: { 'Content-Type': 'application/json' }
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao editar projeto completo:', error);
       throw error;
     }
   }

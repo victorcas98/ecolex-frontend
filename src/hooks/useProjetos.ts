@@ -15,8 +15,12 @@ interface UseProjetos {
   updateProjeto: (id: string, projetoData: UpdateProjetoData) => Promise<Projeto | null>;
   deleteProjeto: (id: string) => Promise<boolean>;
   vincularTema: (projetoId: string, temaId: string) => Promise<Projeto | null>;
-  adicionarRequisito: (projetoId: string, temaNome: string, requisito: { nome: string; status?: string; leisIds?: string[] }) => Promise<Projeto | null>;
-  atualizarRequisito: (projetoId: string, temaNome: string, requisitoNome: string, updates: { status?: string; leisIds?: string[] }) => Promise<Projeto | null>;
+  adicionarRequisito: (projetoId: string, temaId: string, requisito: { nome: string; status?: string; leisIds?: string[] }) => Promise<Projeto | null>;
+  atualizarRequisito: (projetoId: string, temaId: string, requisitoId: string, updates: { status?: string; leisIds?: string[]; dataValidade?: string }) => Promise<Projeto | null>;
+  salvarEvidencia: (projetoId: string, temaId: string, requisitoId: string, evidenciaData: { evidencia: string; anexos: File[] }) => Promise<Projeto | null>;
+  atualizarStatusRequisito: (projetoId: string, temaId: string, requisitoId: string, novoStatus: string) => Promise<Projeto | null>;
+  removerRequisito: (projetoId: string, temaId: string, requisitoId: string) => Promise<Projeto | null>;
+  editarCompleto: (id: string, projetoCompleto: { nome: string; temas: Array<{ tema: string; requisitos: Array<{ requisito: string; status: string; leis: string[]; evidencia?: string; dataEvidencia?: string; anexos?: string[]; }>; }>; }) => Promise<Projeto | null>;
   clearError: () => void;
 }
 
@@ -146,11 +150,11 @@ export const useProjetos = (): UseProjetos => {
     }
   }, [showError, showSuccess]);
 
-  const adicionarRequisito = useCallback(async (projetoId: string, temaNome: string, requisito: { nome: string; status?: string; leisIds?: string[] }): Promise<Projeto | null> => {
+  const adicionarRequisito = useCallback(async (projetoId: string, temaId: string, requisito: { nome: string; status?: string; leisIds?: string[] }): Promise<Projeto | null> => {
     try {
       setLoading(true);
       setError(null);
-      const projetoAtualizado = await projetosService.adicionarRequisito(projetoId, temaNome, requisito);
+      const projetoAtualizado = await projetosService.adicionarRequisito(projetoId, temaId, requisito);
       setProjetos(prev => prev.map(projeto => 
         projeto.id === projetoId ? projetoAtualizado : projeto
       ));
@@ -167,14 +171,18 @@ export const useProjetos = (): UseProjetos => {
     }
   }, [showError, showSuccess]);
 
-  const atualizarRequisito = useCallback(async (projetoId: string, temaNome: string, requisitoNome: string, updates: { status?: string; leisIds?: string[] }): Promise<Projeto | null> => {
+  const atualizarRequisito = useCallback(async (projetoId: string, temaId: string, requisitoId: string, updates: { status?: string; leisIds?: string[] }): Promise<Projeto | null> => {
     try {
       setLoading(true);
       setError(null);
-      const projetoAtualizado = await projetosService.atualizarRequisito(projetoId, temaNome, requisitoNome, updates);
+      const projetoAtualizado = await projetosService.atualizarRequisito(projetoId, temaId, requisitoId, updates);
       setProjetos(prev => prev.map(projeto => 
         projeto.id === projetoId ? projetoAtualizado : projeto
       ));
+      // Atualizar também o projeto individual se estiver carregado
+      if (projeto && projeto.id === projetoId) {
+        setProjeto(projetoAtualizado);
+      }
       showSuccess('Requisito atualizado');
       return projetoAtualizado;
     } catch (err) {
@@ -186,7 +194,120 @@ export const useProjetos = (): UseProjetos => {
     } finally {
       setLoading(false);
     }
-  }, [showError, showSuccess]);
+  }, [showError, showSuccess, projeto]);
+
+  const salvarEvidencia = useCallback(
+    async (
+      projetoId: string,
+      temaId: string,
+      requisitoId: string,
+      evidenciaData: { evidencia: string; anexos: File[] }
+    ): Promise<Projeto | null> => {
+      try {
+        setLoading(true);
+        setError(null);
+        // Enviar os campos esperados pela API: registro e anexos
+        const { evidencia, anexos } = evidenciaData;
+        const projetoAtualizado = await projetosService.salvarEvidencia(
+          projetoId,
+          temaId,
+          requisitoId,
+          { registro: evidencia, anexos }
+        );
+        // Atualizar status para 'concluido' após registrar evidência
+        await projetosService.atualizarStatusRequisito(projetoId, temaId, requisitoId, 'concluido');
+        // Buscar novamente o projeto para atualizar o estado e as cores dos cards
+        await getProjetoById(projetoId);
+        showSuccess('Evidência salva com sucesso');
+        return projetoAtualizado;
+      } catch (err) {
+        const message =
+          err instanceof Error ? err.message : 'Erro ao salvar evidência';
+        setError(message);
+        console.error('Erro ao salvar evidência:', err);
+        showError(message);
+        return null;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [showError, showSuccess, projeto]
+  );
+
+  const atualizarStatusRequisito = useCallback(async (projetoId: string, temaId: string, requisitoId: string, novoStatus: string): Promise<Projeto | null> => {
+    try {
+      setLoading(true);
+      setError(null);
+      const projetoAtualizado = await projetosService.atualizarStatusRequisito(projetoId, temaId, requisitoId, novoStatus);
+      setProjetos(prev => prev.map(projeto => 
+        projeto.id === projetoId ? projetoAtualizado : projeto
+      ));
+      // Atualizar também o projeto individual se estiver carregado
+      if (projeto && projeto.id === projetoId) {
+        setProjeto(projetoAtualizado);
+      }
+      showSuccess('Status do requisito atualizado');
+      return projetoAtualizado;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Erro ao atualizar status do requisito';
+      setError(message);
+      console.error('Erro ao atualizar status do requisito:', err);
+      showError(message);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, [showError, showSuccess, projeto]);
+
+  const removerRequisito = useCallback(async (projetoId: string, temaId: string, requisitoId: string): Promise<Projeto | null> => {
+    try {
+      setLoading(true);
+      setError(null);
+      const projetoAtualizado = await projetosService.removerRequisito(projetoId, temaId, requisitoId);
+      setProjetos(prev => prev.map(projeto => 
+        projeto.id === projetoId ? projetoAtualizado : projeto
+      ));
+      // Atualizar também o projeto individual se estiver carregado
+      if (projeto && projeto.id === projetoId) {
+        setProjeto(projetoAtualizado);
+      }
+      showSuccess('Requisito removido com sucesso');
+      return projetoAtualizado;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Erro ao remover requisito';
+      setError(message);
+      console.error('Erro ao remover requisito:', err);
+      showError(message);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, [showError, showSuccess, projeto]);
+
+  const editarCompleto = useCallback(async (id: string, projetoCompleto: { nome: string; temas: Array<{ tema: string; requisitos: Array<{ requisito: string; status: string; leis: string[]; evidencia?: string; dataEvidencia?: string; anexos?: string[]; }>; }>; }): Promise<Projeto | null> => {
+    try {
+      setLoading(true);
+      setError(null);
+      const projetoAtualizado = await projetosService.editarCompleto(id, projetoCompleto);
+      setProjetos(prev => prev.map(projeto => 
+        projeto.id === id ? projetoAtualizado : projeto
+      ));
+      // Atualizar também o projeto individual se estiver carregado
+      if (projeto && projeto.id === id) {
+        setProjeto(projetoAtualizado);
+      }
+      showSuccess('Projeto editado completamente');
+      return projetoAtualizado;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Erro ao editar projeto completo';
+      setError(message);
+      console.error('Erro ao editar projeto completo:', err);
+      showError(message);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, [showError, showSuccess, projeto]);
 
   return {
     projetos,
@@ -201,6 +322,10 @@ export const useProjetos = (): UseProjetos => {
     vincularTema,
     adicionarRequisito,
     atualizarRequisito,
+    salvarEvidencia,
+    atualizarStatusRequisito,
+    removerRequisito,
+    editarCompleto,
     clearError,
   };
 };

@@ -29,25 +29,11 @@ export const useProjetoStats = (projeto: Projeto | null): ProjetoStats => {
       }
 
       // Calcular pontuação baseada nos status
-      // sim = 2 pontos, pendente = 1 ponto, não = 0 pontos
-      const pontuacaoTotal = tema.requisitos.reduce((acc, requisito) => {
-        switch (requisito.status) {
-          case 'sim':
-            return acc + 2;
-          case 'pendente':
-            return acc + 1;
-          case 'não':
-          case 'nao':
-          default:
-            return acc + 0;
-        }
-      }, 0);
-
-      // Pontuação máxima possível (todos "sim")
-      const pontuacaoMaxima = totalRequisitos * 2;
+      // ✅ concluido = 100%, pendente = 0%
+      const requisitosConcluidos = tema.requisitos.filter(req => req.status === 'concluido').length;
       
       // Calcular porcentagem
-      const porcentagem = Math.round((pontuacaoTotal / pontuacaoMaxima) * 100);
+      const porcentagem = Math.round((requisitosConcluidos / totalRequisitos) * 100);
 
       // Determinar cor baseada na porcentagem
       let cor: 'red' | 'yellow' | 'green';
