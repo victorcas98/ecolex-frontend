@@ -117,11 +117,14 @@ const projetosService = {
     projetoId: string,
     temaId: string,
     requisitoId: string,
-    evidenciaData: { registro: string; anexos: File[] }
+    evidenciaData: { evidencia: string; data?: string; anexos: File[] }
   ): Promise<Projeto> => {
     try {
       const formData = new FormData();
-      formData.append('registro', evidenciaData.registro);
+      formData.append('evidencia', evidenciaData.evidencia);
+      if (evidenciaData.data) {
+        formData.append('data', evidenciaData.data);
+      }
       evidenciaData.anexos.forEach((arquivo) => {
         formData.append('anexo', arquivo);
       });

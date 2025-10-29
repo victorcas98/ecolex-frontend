@@ -109,7 +109,7 @@ const TemasSection: React.FC<TemasSectionProps> = ({
                   : [...prev, item.value as string]
               );
             }}
-            placeholder="Selecione um tema"
+            placeholder="Selecione os temas para a lei"
           />
       </div>
       {/* Lista de temas adicionados */}

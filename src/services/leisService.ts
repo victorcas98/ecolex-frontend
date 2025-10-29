@@ -5,8 +5,10 @@ import { API_BASE_URL } from './api';
 export interface Lei {
   id: string;
   nome: string;
-  requisitosIds: string[];
-  temasIds: string[];
+  link?: string;
+  documento?: string | null;
+  requisitosIds?: string[];
+  temasIds?: string[];
 }
 
 export interface CreateLeiData {

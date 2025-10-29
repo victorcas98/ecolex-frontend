@@ -1,40 +1,61 @@
-import React, { useState } from 'react';
-import type { RequisitoStatus } from '../types/projeto';
+import React, { useState, useEffect } from "react";
+import type { Lei } from "../services/leisService";
+import leisService from "../services/leisService";
+import type { RequisitoStatus } from "../types/projeto";
 
 interface RequisitoCardProps {
   requisito: RequisitoStatus;
   onRegistrarEvidencia: (requisito: RequisitoStatus) => void;
 }
 
-const RequisitoCard: React.FC<RequisitoCardProps> = ({ requisito, onRegistrarEvidencia }) => {
+const RequisitoCard: React.FC<RequisitoCardProps> = ({
+  requisito,
+  onRegistrarEvidencia,
+}) => {
   const [expandido, setExpandido] = useState(false);
+
+    // State for law details
+    const [leis, setLeis] = useState<Lei[]>([]);
+    const [leisLoading, setLeisLoading] = useState(false);
+
+    useEffect(() => {
+      if (expandido && requisito.leisIds && requisito.leisIds.length > 0) {
+        setLeisLoading(true);
+        Promise.all(requisito.leisIds.map((id) => leisService.getById(id)))
+          .then((leisData) => setLeis(leisData))
+          .catch(() => setLeis([]))
+          .finally(() => setLeisLoading(false));
+      } else {
+        setLeis([]);
+      }
+    }, [expandido, requisito.leisIds]);
 
   // Determinar cor e ícone baseado no status
   const getStatusConfig = (status: string) => {
     switch (status) {
-      case 'concluido':
+      case "concluido":
         return {
-          borderColor: 'border-green-500',
-          bgColor: 'bg-green-50',
-          textColor: 'text-green-600',
-          icon: '✓',
-          statusText: 'Concluído'
+          borderColor: "border-green-500",
+          bgColor: "bg-green-50",
+          textColor: "text-green-600",
+          icon: "✓",
+          statusText: "Concluído",
         };
-      case 'pendente':
+      case "pendente":
         return {
-          borderColor: 'border-yellow-500',
-          bgColor: 'bg-yellow-50',
-          textColor: 'text-yellow-600',
-          icon: '⏳',
-          statusText: 'Pendente'
+          borderColor: "border-red-500",
+          bgColor: "bg-red-50",
+          textColor: "text-red-600",
+          icon: "⏳",
+          statusText: "Pendente",
         };
       default:
         return {
-          borderColor: 'border-gray-500',
-          bgColor: 'bg-gray-50',
-          textColor: 'text-gray-600',
-          icon: '?',
-          statusText: 'Desconhecido'
+          borderColor: "border-gray-500",
+          bgColor: "bg-gray-50",
+          textColor: "text-gray-600",
+          icon: "?",
+          statusText: "Desconhecido",
         };
     }
   };
@@ -42,9 +63,11 @@ const RequisitoCard: React.FC<RequisitoCardProps> = ({ requisito, onRegistrarEvi
   const statusConfig = getStatusConfig(requisito.status);
 
   return (
-    <div className={`border-2 rounded-lg ${statusConfig.borderColor} ${statusConfig.bgColor}`}>
+    <div
+      className={`border-2 rounded-lg ${statusConfig.borderColor} ${statusConfig.bgColor}`}
+    >
       {/* Header do card */}
-      <div 
+      <div
         className="p-4 cursor-pointer flex items-center justify-between"
         onClick={() => setExpandido(!expandido)}
       >
@@ -59,9 +82,13 @@ const RequisitoCard: React.FC<RequisitoCardProps> = ({ requisito, onRegistrarEvi
             </p>
           </div>
         </div>
-        
+
         <button className="text-gray-400 hover:text-gray-600">
-          <span className={`transform transition-transform ${expandido ? 'rotate-180' : ''}`}>
+          <span
+            className={`transform transition-transform ${
+              expandido ? "rotate-180" : ""
+            }`}
+          >
             ▼
           </span>
         </button>
@@ -75,11 +102,7 @@ const RequisitoCard: React.FC<RequisitoCardProps> = ({ requisito, onRegistrarEvi
             <div>
               <div className="flex items-center justify-between mb-3">
                 <h4 className="font-medium text-gray-700">Evidências</h4>
-                <span className={`text-sm ${requisito.evidencia ? 'text-green-600' : 'text-red-600'}`}>
-                  {requisito.evidencia ? 'Cadastrada' : 'Pendente'}
-                </span>
               </div>
-              
               {requisito.evidencia ? (
                 <div className="text-sm text-gray-600 mb-3">
                   {requisito.evidencia}
@@ -89,34 +112,51 @@ const RequisitoCard: React.FC<RequisitoCardProps> = ({ requisito, onRegistrarEvi
                   Nenhuma evidência registrada
                 </div>
               )}
-
               <button
                 onClick={() => onRegistrarEvidencia(requisito)}
                 className="text-gray-500 underline hover:text-gray-700 text-sm"
               >
-                Registrar nova
+                {requisito.evidencia ? "Editar" : "Registrar nova"}
               </button>
             </div>
 
-            {/* Seção Planos de Ação */}
+            {/* Seção Leis Vinculadas */}
             <div>
-              <div className="flex items-center justify-between mb-3">
-                <h4 className="font-medium text-gray-700">Planos de ação</h4>
-              </div>
-              
-              <div className="space-y-2">
-                {/* TODO: Implementar planos de ação quando disponível no backend */}
-                <div className="flex items-center justify-between text-sm">
-                  <span>• Plano 01</span>
+              <h4 className="font-medium text-gray-700 mb-3">
+                Leis vinculadas
+              </h4>
+              {requisito.leisIds && requisito.leisIds.length > 0 ? (
+                <div className="space-y-1">
+                  {leisLoading ? (
+                    <div className="text-sm text-gray-400">Carregando leis...</div>
+                  ) : leis.length > 0 ? (
+                    leis.map((lei) => {
+                      let href = "#";
+                      if (lei.link) {
+                        href = lei.link;
+                      } else if (lei.documento) {
+                        href = lei.documento;
+                      }
+                      return (
+                        <a
+                          key={lei.id}
+                          href={href}
+                          className="text-blue-700 underline block text-sm"
+                          target="_blank" rel="noopener noreferrer"
+                        >
+                          {lei.nome}
+                        </a>
+                      );
+                    })
+                  ) : (
+                    <div className="text-sm text-gray-500">Nenhuma lei encontrada</div>
+                  )}
                 </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span>• Plano 02</span>
+              ) : (
+                <div className="text-sm text-gray-500">
+                  Nenhuma lei vinculada
                 </div>
-              </div>
-
-              <button className="text-gray-500 underline hover:text-gray-700 text-sm mt-3">
-                Registrar nova
-              </button>
+              )}
             </div>
           </div>
         </div>

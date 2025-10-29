@@ -17,7 +17,7 @@ interface UseProjetos {
   vincularTema: (projetoId: string, temaId: string) => Promise<Projeto | null>;
   adicionarRequisito: (projetoId: string, temaId: string, requisito: { nome: string; status?: string; leisIds?: string[] }) => Promise<Projeto | null>;
   atualizarRequisito: (projetoId: string, temaId: string, requisitoId: string, updates: { status?: string; leisIds?: string[]; dataValidade?: string }) => Promise<Projeto | null>;
-  salvarEvidencia: (projetoId: string, temaId: string, requisitoId: string, evidenciaData: { evidencia: string; anexos: File[] }) => Promise<Projeto | null>;
+  salvarEvidencia: (projetoId: string, temaId: string, requisitoId: string, evidenciaData: { evidencia: string; data?: string; anexos: File[] }) => Promise<Projeto | null>;
   atualizarStatusRequisito: (projetoId: string, temaId: string, requisitoId: string, novoStatus: string) => Promise<Projeto | null>;
   removerRequisito: (projetoId: string, temaId: string, requisitoId: string) => Promise<Projeto | null>;
   editarCompleto: (id: string, projetoCompleto: { nome: string; temas: Array<{ tema: string; requisitos: Array<{ requisito: string; status: string; leis: string[]; evidencia?: string; dataEvidencia?: string; anexos?: string[]; }>; }>; }) => Promise<Projeto | null>;
@@ -201,18 +201,18 @@ export const useProjetos = (): UseProjetos => {
       projetoId: string,
       temaId: string,
       requisitoId: string,
-      evidenciaData: { evidencia: string; anexos: File[] }
+      evidenciaData: { evidencia: string; data?: string; anexos: File[] }
     ): Promise<Projeto | null> => {
       try {
         setLoading(true);
         setError(null);
-        // Enviar os campos esperados pela API: registro e anexos
-        const { evidencia, anexos } = evidenciaData;
+        // Enviar os campos esperados pela API: evidencia, data e anexos
+        const { evidencia, anexos, data } = evidenciaData;
         const projetoAtualizado = await projetosService.salvarEvidencia(
           projetoId,
           temaId,
           requisitoId,
-          { registro: evidencia, anexos }
+          { evidencia, data, anexos }
         );
         // Atualizar status para 'concluido' após registrar evidência
         await projetosService.atualizarStatusRequisito(projetoId, temaId, requisitoId, 'concluido');
@@ -221,8 +221,7 @@ export const useProjetos = (): UseProjetos => {
         showSuccess('Evidência salva com sucesso');
         return projetoAtualizado;
       } catch (err) {
-        const message =
-          err instanceof Error ? err.message : 'Erro ao salvar evidência';
+        const message = err instanceof Error ? err.message : 'Erro ao salvar evidência';
         setError(message);
         console.error('Erro ao salvar evidência:', err);
         showError(message);
@@ -231,7 +230,7 @@ export const useProjetos = (): UseProjetos => {
         setLoading(false);
       }
     },
-    [showError, showSuccess, projeto]
+    [showError, showSuccess, getProjetoById]
   );
 
   const atualizarStatusRequisito = useCallback(async (projetoId: string, temaId: string, requisitoId: string, novoStatus: string): Promise<Projeto | null> => {

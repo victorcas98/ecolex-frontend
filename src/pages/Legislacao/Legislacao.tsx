@@ -69,6 +69,7 @@ const Legislacao: React.FC = () => {
                 selected={toggleType === "link"}
                 onClick={() => {
                   setToggleType("link");
+                  setSelectedFile(null);
                 }}
               >
                 Link
@@ -77,6 +78,7 @@ const Legislacao: React.FC = () => {
                 selected={toggleType === "doc"}
                 onClick={() => {
                   setToggleType("doc");
+                  setUrl("");
                 }}
               >
                 Documento
