@@ -16,11 +16,13 @@ const ToggleButton: React.FC<ToggleButtonProps> = ({
   return (
     <button
       onClick={onClick}
-      className={`px-3 py-1 border border-custom-green rounded-md  rounded-md transition-all duration-200 ${
+      className={`px-3 py-1 border border-accessible-accent rounded-md transition-all duration-accessible min-h-touch ${
         selected 
-          ? 'bg-custom-green text-custom-light-blue' 
-          : 'bg-custom-light-blue text-custom-green'
-      } ${className}`}
+          ? 'bg-accessible-accent text-white' 
+          : 'bg-accessible-bg-primary text-accessible-accent hover:bg-accessible-bg-secondary'
+      } focus:outline-none focus:ring-2 focus:ring-accessible-focus focus:ring-offset-2 ${className}`}
+      role="switch"
+      aria-pressed={selected}
     >
       {children}
     </button>

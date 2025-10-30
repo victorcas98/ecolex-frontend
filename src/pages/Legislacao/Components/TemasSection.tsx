@@ -39,7 +39,7 @@ const TemasSection: React.FC<TemasSectionProps> = ({
       .map((tema) => (
         <li
           key={tema.id}
-          className="px-3 bg-custom-light-blue text-custom-green rounded-md"
+          className="px-3 bg-accessible-bg-secondary text-accessible-accent rounded-md border border-accessible-border"
         >
           <div className="flex justify-between items-center">
             <Label theme="secondary" text={tema.nome} />
@@ -50,6 +50,7 @@ const TemasSection: React.FC<TemasSectionProps> = ({
                   prev.filter((id) => id !== String(tema.id))
                 )
               }
+              ariaLabel={`Remover tema ${tema.nome}`}
             >
               - Remover tema
             </Button>

@@ -51,20 +51,39 @@ const Legislacao: React.FC = () => {
       <div className="space-y-6">
         {/* Cabeçalho */}
         <Title title="Cadastrar Legislação" />
+        
         {/* Formulário */}
-        <div className="space-y-2 px-8">
+        <form 
+          className="space-y-4 px-8"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit();
+          }}
+          aria-label="Formulário de cadastro de legislação"
+        >
           {/* Nome da Lei */}
-          <Label text="Nome da Lei" />
-          <TextInput
-            value={nomeLei}
-            onChange={setNomeLei}
-            placeholder="Digite o nome da legislação"
-          />
+          <div>
+            <Label 
+              text="Nome da Lei" 
+              htmlFor="nome-lei"
+              required
+            />
+            <TextInput
+              value={nomeLei}
+              onChange={setNomeLei}
+              placeholder="Digite o nome da legislação"
+              label=""
+              required
+              type="text"
+            />
+          </div>
 
           {/* Origem */}
-          <div className="space-y-2">
-            <Label text="Origem" />
-            <div className="flex space-x-2">
+          <fieldset className="space-y-2">
+            <legend className="block text-sm mb-2 text-accessible-text-primary font-medium">
+              Origem da Legislação
+            </legend>
+            <div className="flex space-x-2" role="radiogroup" aria-label="Tipo de origem da legislação">
               <ToggleButton
                 selected={toggleType === "link"}
                 onClick={() => {
@@ -84,38 +103,56 @@ const Legislacao: React.FC = () => {
                 Documento
               </ToggleButton>
             </div>
-          </div>
+          </fieldset>
 
-          {/* URL/Link */}
-
+          {/* URL/Link ou Upload de Documento */}
           {toggleType === "link" ? (
-            <TextInput
-              value={url}
-              onChange={setUrl}
-              placeholder="https://..."
-            />
-          ) : (
-            <div className="space-y-2">
-              <input
-                type="file"
-                accept=".pdf"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) {
-                    console.log("Arquivo selecionado:", file.name);
-                    setSelectedFile(file);
-                  }
-                }}
-                className="w-full rounded-md file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-custom-blue file:text-custom-light-blue hover:file:bg-blue-600 cursor-pointer"
+            <div>
+              <Label 
+                text="URL da Legislação" 
+                htmlFor="url-lei"
+                required
               />
-              <p className="text-custom-grey">
-                Apenas arquivos PDF são aceitos
-              </p>
+              <TextInput
+                value={url}
+                onChange={setUrl}
+                placeholder="https://..."
+                label=""
+                type="url"
+                required
+              />
+            </div>
+          ) : (
+            <div>
+              <Label 
+                text="Documento PDF" 
+                htmlFor="arquivo-lei"
+                required
+              />
+              <div className="space-y-2">
+                <input
+                  id="arquivo-lei"
+                  type="file"
+                  accept=".pdf"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      console.log("Arquivo selecionado:", file.name);
+                      setSelectedFile(file);
+                    }
+                  }}
+                  className="w-full rounded-md file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-accessible-accent file:text-white hover:file:bg-accessible-accent-hover cursor-pointer focus:outline-none focus:ring-2 focus:ring-accessible-focus focus:ring-offset-2"
+                  aria-label="Selecionar arquivo PDF da legislação"
+                  required
+                />
+                <p className="text-accessible-text-secondary text-sm" id="file-help">
+                  Apenas arquivos PDF são aceitos
+                </p>
+              </div>
             </div>
           )}
 
           {/* Seção Temas */}
-
           <TemasSection setTemasIds={setTemasIds} temasIds={temasIds} />
           
           {/* Botão Salvar */}
@@ -125,15 +162,18 @@ const Legislacao: React.FC = () => {
                 loading ||
                 nomeLei.trim().length < 3 ||
                 temasIds.length < 1 ||
-                (toggleType === "link" ? url.trim().length < 5 : selectedFile === null) // url mínimo 10 chars ou arquivo selecionado
+                (toggleType === "link" ? url.trim().length < 5 : selectedFile === null)
               }
               className="w-[40%]"
               onClick={handleSubmit}
+              type="submit"
+              loading={loading}
+              ariaLabel={loading ? "Cadastrando legislação..." : "Cadastrar nova legislação"}
             >
               {loading ? "Cadastrando..." : "Cadastrar"}
             </Button>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );

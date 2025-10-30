@@ -15,8 +15,8 @@ const RequisitoItem: React.FC<RequisitoItemProps> = ({
   disabled = false
 }) => {
   return (
-    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-md border">
-      <span className="text-sm text-gray-700 flex-1">{nome}</span>
+    <div className="flex items-center justify-between p-3 bg-accessible-bg-secondary rounded-md border border-accessible-border">
+      <span className="text-sm text-accessible-text-primary flex-1">{nome}</span>
       
       <div className="flex space-x-2 ml-4">
         <Button
@@ -24,6 +24,7 @@ const RequisitoItem: React.FC<RequisitoItemProps> = ({
           onClick={() => onChange(!selecionado)}
           disabled={disabled}
           className="px-3 py-1 text-sm min-w-[50px]"
+          ariaLabel={`${selecionado ? 'Remover' : 'Incluir'} requisito ${nome}`}
         >
           {selecionado ? '✓ Incluir' : 'Incluir'}
         </Button>

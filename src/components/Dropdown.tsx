@@ -56,13 +56,17 @@ const Dropdown: React.FC<DropdownProps> = ({
     <div className={"relative"} ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full p-1 bg-white border border-custom-blue rounded-md text-left flex justify-between items-center hover:bg-gray-50 transition-colors"
+        className="w-full p-1 bg-accessible-bg-primary border border-custom-blue rounded-md text-left flex justify-between items-center hover:bg-accessible-bg-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-accessible-focus focus:ring-offset-2 min-h-touch"
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
+        aria-label={selectedItem ? `Selecionado: ${selectedItem.label}` : placeholder}
       >
-        <span>{selectedItem ? selectedItem.label : placeholder}</span>
+        <span className="text-accessible-text-primary">{selectedItem ? selectedItem.label : placeholder}</span>
         <span
           className={`text-custom-green transform transition-transform ${
             isOpen ? "rotate-180" : ""
           }`}
+          aria-hidden="true"
         >
           ▼
         </span>

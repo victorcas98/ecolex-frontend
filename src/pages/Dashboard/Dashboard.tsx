@@ -29,7 +29,7 @@ const Dashboard: React.FC = () => {
   if (loading) {
     return (
       <div className="w-full h-screen flex items-center justify-center">
-        <p className="text-gray-500">Carregando projeto...</p>
+        <p className="text-accessible-text-secondary">Carregando projeto...</p>
       </div>
     );
   }
@@ -37,7 +37,7 @@ const Dashboard: React.FC = () => {
   if (!projeto) {
     return (
       <div className="w-full h-screen flex items-center justify-center">
-        <p className="text-gray-500">Projeto não encontrado.</p>
+        <p className="text-accessible-text-secondary">Projeto não encontrado.</p>
       </div>
     );
   }
@@ -67,8 +67,8 @@ const Dashboard: React.FC = () => {
 
         {temas.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-500">Este projeto não possui temas configurados.</p>
-            <p className="text-gray-400 text-sm mt-2">
+            <p className="text-accessible-text-secondary">Este projeto não possui temas configurados.</p>
+            <p className="text-accessible-text-secondary text-sm mt-2">
               Adicione temas ao projeto para visualizar o progresso.
             </p>
           </div>

@@ -145,7 +145,7 @@ const CadastroProjeto: React.FC = () => {
     const requisitosDoTema = requisitosPorTema[temaId] || [];
 
     if (requisitosDoTema.length === 0 || !temasCarregados.has(temaId)) {
-      return <div className="text-gray-500 text-sm">Nenhum requisito encontrado para este tema</div>;
+      return <div className="text-accessible-text-secondary text-sm">Nenhum requisito encontrado para este tema</div>;
     }
 
     return (
@@ -198,8 +198,8 @@ const CadastroProjeto: React.FC = () => {
           ))}
 
           {temas.length === 0 && (
-            <div className="text-gray-500 text-center py-4">
-              Nenhum tema encontrado. <Link to="/legislacao" className="text-blue-500 hover:text-blue-700 underline">Crie temas primeiro na seção de Legislação.</Link>
+            <div className="text-accessible-text-secondary text-center py-4">
+              Nenhum tema encontrado. <Link to="/legislacao" className="text-accessible-accent hover:text-accessible-accent-hover underline focus:outline-none focus:ring-2 focus:ring-accessible-focus focus:ring-offset-2">Crie temas primeiro na seção de Legislação.</Link>
             </div>
           )}
           

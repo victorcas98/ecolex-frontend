@@ -4,19 +4,63 @@ import NavigationItem from './NavigationItem';
 
 const Navigation: React.FC = () => {
   return (
-    <nav className="w-64 h-screen bg-green p-6 shadow-lg">
+    <nav 
+      className="w-64 h-screen bg-custom-green p-6 shadow-lg"
+      role="navigation"
+      aria-label="Menu principal de navegação"
+    >
       {/* Logo */}
       <div className="mb-8">
-        <img src={ecolexLogo} alt="EcoLex Logo" className="h-8 w-auto" />
+        <img 
+          src={ecolexLogo} 
+          alt="EcoLex - Sistema de Gestão de Conformidade Ambiental" 
+          className="h-8 w-auto"
+          role="img"
+        />
       </div>
       
       {/* Menu Items */}
-      <ul className="space-y-4 ">
-        <NavigationItem label="Projetos" destiny="/" />
-        <NavigationItem label="Novo projeto" destiny="/projeto" />
-        <NavigationItem label="Legislação" destiny="/legislacao" />
-        <NavigationItem label="Sobre EcoLex" destiny="/sobre" />
+      <ul 
+        className="space-y-4"
+        role="menubar"
+        aria-label="Menu de navegação"
+      >
+        <NavigationItem 
+          label="Projetos" 
+          destiny="/" 
+          ariaLabel="Ir para a página de projetos"
+          accessKey="p"
+        />
+        <NavigationItem 
+          label="Novo projeto" 
+          destiny="/projeto" 
+          ariaLabel="Criar um novo projeto"
+          accessKey="n"
+        />
+        <NavigationItem 
+          label="Legislação" 
+          destiny="/legislacao" 
+          ariaLabel="Consultar legislação ambiental"
+          accessKey="l"
+        />
+        <NavigationItem 
+          label="Sobre EcoLex" 
+          destiny="/sobre" 
+          ariaLabel="Informações sobre o sistema EcoLex"
+          accessKey="s"
+        />
       </ul>
+      
+      {/* Informação de atalhos */}
+      <div className="mt-8 p-3 bg-white bg-opacity-10 rounded text-white text-xs">
+        <p className="font-semibold mb-1">Atalhos de teclado:</p>
+        <ul className="space-y-1">
+          <li>Alt + P: Projetos</li>
+          <li>Alt + N: Novo projeto</li>
+          <li>Alt + L: Legislação</li>
+          <li>Alt + S: Sobre</li>
+        </ul>
+      </div>
     </nav>
   );
 };

@@ -127,7 +127,7 @@ export const EditarProjeto: React.FC = () => {
   if (!projeto) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <div className="text-lg text-red-600">Projeto não encontrado</div>
+        <div className="text-lg text-accessible-error">Projeto não encontrado</div>
       </div>
     );
   }
@@ -152,13 +152,14 @@ export const EditarProjeto: React.FC = () => {
             <Label>Temas do Projeto</Label>
             <div className="space-y-4">
               {projetoForm.temas.map((tema, temaIndex) => (
-                <div key={temaIndex} className="border rounded-lg p-4 bg-gray-50">
+                <div key={temaIndex} className="border rounded-lg p-4 bg-accessible-bg-secondary border-accessible-border">
                   <div className="flex justify-between items-center mb-3">
-                    <h3 className="text-lg font-semibold">{tema.tema}</h3>
+                    <h3 className="text-lg font-semibold text-accessible-text-primary">{tema.tema}</h3>
                     <Button
                       theme="transparent"
                       onClick={() => removerTema(temaIndex)}
-                      className="text-red-600 border-red-600 hover:bg-red-50"
+                      className="text-accessible-error border-accessible-error hover:bg-red-50"
+                      ariaLabel={`Remover tema ${tema.tema}`}
                     >
                       Remover Tema
                     </Button>
@@ -166,10 +167,10 @@ export const EditarProjeto: React.FC = () => {
                   
                   {/* Requisitos do Tema */}
                   <div className="space-y-2">
-                    <h4 className="font-medium">Requisitos:</h4>
+                    <h4 className="font-medium text-accessible-text-primary">Requisitos:</h4>
                     {tema.requisitos.map((requisito, requisitoIndex) => (
-                      <div key={requisitoIndex} className="flex items-center justify-between p-2 bg-white rounded border">
-                        <span className="flex-1">{requisito.requisito}</span>
+                      <div key={requisitoIndex} className="flex items-center justify-between p-2 bg-accessible-bg-primary rounded border border-accessible-border">
+                        <span className="flex-1 text-accessible-text-primary">{requisito.requisito}</span>
                         <select
                           value={requisito.status}
                           onChange={(e) => atualizarStatusRequisito(temaIndex, requisitoIndex, e.target.value)}

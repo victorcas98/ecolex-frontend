@@ -6,6 +6,10 @@ interface ButtonProps {
   children: React.ReactNode;
   className?: string;
   theme?: 'primary' | 'secondary' | 'transparent'; 
+  ariaLabel?: string;
+  ariaDescribedBy?: string;
+  type?: 'button' | 'submit' | 'reset';
+  loading?: boolean;
 }
 
 const Button: React.FC<ButtonProps> = ({ 
@@ -13,26 +17,54 @@ const Button: React.FC<ButtonProps> = ({
   disabled = false, 
   children,
   className = '',
-  theme = 'primary'
+  theme = 'primary',
+  ariaLabel,
+  ariaDescribedBy,
+  type = 'button',
+  loading = false
 }) => {
 
  const ButtonTheme = {
-  primary: "text-custom-light-blue bg-custom-green hover:bg-green-600 cursor-pointer",
-  secondary: "text-custom-light-blue bg-custom-blue hover:bg-blue-600 cursor-pointer",
-  transparent: "text-custom-green bg-transparent hover:bg-gray-100 cursor-pointer border border-custom-green"
+  primary: "text-white bg-accessible-accent hover:bg-accessible-accent-hover focus:ring-accessible-focus",
+  secondary: "text-white bg-custom-blue hover:bg-blue-600 focus:ring-accessible-focus",
+  transparent: "text-accessible-accent bg-transparent hover:bg-accessible-bg-secondary border border-accessible-accent focus:ring-accessible-focus"
 };
+
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      if (!disabled && !loading) {
+        onClick();
+      }
+    }
+  };
+
+  const isDisabled = disabled || loading;
 
   return (
     <button
+      type={type}
       onClick={onClick}
-      disabled={disabled}
-      className={`px-3 py-1 rounded-md transition-all duration-200 ${
-        disabled
-          ? 'bg-custom-grey cursor-default'
+      disabled={isDisabled}
+      onKeyDown={handleKeyDown}
+      aria-label={ariaLabel}
+      aria-describedby={ariaDescribedBy}
+      aria-disabled={isDisabled}
+      className={`px-4 py-2 rounded-md transition-all duration-accessible font-medium min-h-touch min-w-touch
+        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-opacity-50
+        ${isDisabled
+          ? 'bg-gray-400 text-gray-600 cursor-not-allowed opacity-60'
           : ButtonTheme[theme]
-          } ${className}`}
+        } ${loading ? 'loading' : ''} ${className}`}
     >
-      {children}
+      {loading ? (
+        <>
+          <span className="sr-only">Carregando...</span>
+          <span aria-hidden="true">{children}</span>
+        </>
+      ) : (
+        children
+      )}
     </button>
   );
 };

@@ -8,18 +8,38 @@ interface ErrorModalProps {
 const ErrorModal: React.FC<ErrorModalProps> = ({ message, onClose }) => {
   if (!message) return null;
 
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      onClose();
+    }
+  };
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center 
-    bg-custom-black bg-opacity-40 text-custom-black"
+    bg-black bg-opacity-50"
+      onClick={onClose}
+      onKeyDown={handleKeyDown}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="error-title"
     >
-      <div className="bg-custom-light-blue border border-custom-red rounded-md p-6 w-11/12 max-w-md">
-        <h3 className="text-lg font-semibold text-custom-red">Erro</h3>
-        <p className="mt-2 text-sm">{message}</p>
+      <div 
+        className="bg-accessible-bg-primary border border-accessible-error rounded-md p-6 w-11/12 max-w-md shadow-lg"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <h3 
+          id="error-title"
+          className="text-lg font-semibold text-accessible-error"
+        >
+          Erro
+        </h3>
+        <p className="mt-2 text-accessible-text-primary">{message}</p>
         <div className="mt-4 flex justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-custom-red rounded-md text-custom-light-blue"
+            className="px-4 py-2 bg-accessible-error rounded-md text-white hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-accessible-focus focus:ring-offset-2 min-h-touch"
+            aria-label="Fechar modal de erro"
           >
             Fechar
           </button>

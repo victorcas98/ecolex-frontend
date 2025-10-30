@@ -44,7 +44,7 @@ const TemaDetalhes: React.FC = () => {
   if (loading) {
     return (
       <div className="w-full h-screen flex items-center justify-center">
-        <p className="text-gray-500">Carregando detalhes...</p>
+        <p className="text-accessible-text-secondary">Carregando detalhes...</p>
       </div>
     );
   }
@@ -52,7 +52,7 @@ const TemaDetalhes: React.FC = () => {
   if (!projeto || !tema) {
     return (
       <div className="w-full h-screen flex items-center justify-center">
-        <p className="text-gray-500">Tema não encontrado.</p>
+        <p className="text-accessible-text-secondary">Tema não encontrado.</p>
       </div>
     );
   }
@@ -60,11 +60,13 @@ const TemaDetalhes: React.FC = () => {
   return (
     <div className="w-full h-screen">
       {/* Header com título e porcentagem */}
-      <div className="border-b-2 border-gray-300 pb-4 mb-6">
+      <div className="border-b-2 border-accessible-border pb-4 mb-6">
         <Title title={projeto.nome} />
         <div className="flex items-center justify-between px-8 mt-4">
-          <h2 className="text-2xl font-medium text-gray-700">{temaNome}</h2>
-          <span className="text-3xl font-bold text-yellow-600">{calcularPorcentagem()}%</span>
+          <h2 className="text-2xl font-medium text-accessible-text-primary">{temaNome}</h2>
+          <span className="text-3xl font-bold text-accessible-warning" aria-label={`${calcularPorcentagem()}% de progresso`}>
+            {calcularPorcentagem()}%
+          </span>
         </div>
       </div>
 
@@ -80,7 +82,7 @@ const TemaDetalhes: React.FC = () => {
 
         {requisitos.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-500">Este tema não possui requisitos.</p>
+            <p className="text-accessible-text-secondary">Este tema não possui requisitos.</p>
           </div>
         )}
       </div>
