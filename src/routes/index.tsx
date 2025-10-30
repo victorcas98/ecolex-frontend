@@ -6,6 +6,7 @@ import CadastroProjeto from '../pages/CadastroProjeto';
 import Dashboard from '../pages/Dashboard';
 import TemaDetalhes from '../pages/Dashboard/TemaDetalhes';
 import { EditarProjeto } from '../pages/EditarProjeto';
+import Sobre from '../pages/Sobre';
 
 const router = createBrowserRouter([
   {
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
       {
         path: 'projeto/:id/editar',
         element: <EditarProjeto />,
+      },
+      {
+        path: 'sobre',
+        element: <Sobre />,
       },
     ],
   },
