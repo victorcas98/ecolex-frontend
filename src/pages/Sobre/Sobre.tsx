@@ -6,12 +6,78 @@ const Sobre: React.FC = () => {
   const { announceToScreenReader } = useAccessibility();
 
   React.useEffect(() => {
-    announceToScreenReader('Página sobre o EcoLex carregada');
+    // Anúncio mais detalhado para leitores de tela
+    announceToScreenReader('Página sobre o EcoLex carregada. Esta página contém informações detalhadas sobre o projeto, funcionalidades, equipe de desenvolvimento e recursos de acessibilidade.');
+    
+    // Definir o foco no título principal para leitores de tela
+    const mainHeading = document.querySelector('h1');
+    if (mainHeading) {
+      mainHeading.focus();
+    }
   }, [announceToScreenReader]);
+
+  // Função para melhorar navegação por seções
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+      element.focus();
+      announceToScreenReader(`Navegando para seção: ${element.textContent}`);
+    }
+  };
 
   return (
     <div className="w-full min-h-screen">
       <Title title="Sobre EcoLex" />
+      
+      {/* Navegação rápida para acessibilidade */}
+      <nav aria-label="Navegação rápida da página" className="px-8 py-4 bg-accessible-bg-secondary border-b border-accessible-border">
+        <h2 className="text-lg font-semibold text-accessible-text-primary mb-3">
+          Navegação Rápida
+        </h2>
+        <ul className="flex flex-wrap gap-4 text-sm">
+          <li>
+            <button 
+              type="button"
+              onClick={() => scrollToSection('introducao-heading')}
+              className="text-accessible-accent hover:text-accessible-accent-hover underline focus:outline-none focus:ring-2 focus:ring-accessible-accent focus:ring-offset-2"
+              aria-label="Ir para seção: O que é o EcoLex?"
+            >
+              O que é o EcoLex?
+            </button>
+          </li>
+          <li>
+            <button 
+              type="button"
+              onClick={() => scrollToSection('funcionalidades-heading')}
+              className="text-accessible-accent hover:text-accessible-accent-hover underline focus:outline-none focus:ring-2 focus:ring-accessible-accent focus:ring-offset-2"
+              aria-label="Ir para seção: Principais Funcionalidades"
+            >
+              Funcionalidades
+            </button>
+          </li>
+          <li>
+            <button 
+              type="button"
+              onClick={() => scrollToSection('acessibilidade-heading')}
+              className="text-accessible-accent hover:text-accessible-accent-hover underline focus:outline-none focus:ring-2 focus:ring-accessible-accent focus:ring-offset-2"
+              aria-label="Ir para seção: Recursos de Acessibilidade"
+            >
+              Acessibilidade
+            </button>
+          </li>
+          <li>
+            <button 
+              type="button"
+              onClick={() => scrollToSection('autores-heading')}
+              className="text-accessible-accent hover:text-accessible-accent-hover underline focus:outline-none focus:ring-2 focus:ring-accessible-accent focus:ring-offset-2"
+              aria-label="Ir para seção: Equipe de Desenvolvimento"
+            >
+              Equipe
+            </button>
+          </li>
+        </ul>
+      </nav>
       
       <div className="px-8 py-6 space-y-8 max-w-4xl">
         {/* Introdução */}
@@ -113,6 +179,109 @@ const Sobre: React.FC = () => {
           </div>
         </section>
 
+        {/* Seção específica sobre acessibilidade */}
+        <section aria-labelledby="acessibilidade-heading">
+          <h2 id="acessibilidade-heading" className="text-2xl font-semibold text-accessible-text-primary mb-4">
+            ♿ Recursos de Acessibilidade Digital
+          </h2>
+          <div className="bg-accessible-success bg-opacity-10 p-6 rounded-lg border border-accessible-success space-y-4">
+            <p className="text-accessible-text-primary text-lg">
+              O EcoLex foi desenvolvido seguindo rigorosamente a <strong>Lei Brasileira de Inclusão 
+              (nº 13.146/2015)</strong> e o <strong>modelo eMAG (Modelo de Acessibilidade Digital)</strong>.
+            </p>
+            
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="bg-white bg-opacity-50 p-4 rounded">
+                <h3 className="font-semibold text-accessible-text-primary mb-2">
+                  🎧 Para Leitores de Tela
+                </h3>
+                <ul className="text-accessible-text-primary text-sm space-y-1">
+                  <li>• Compatível com NVDA, JAWS e Orca</li>
+                  <li>• Estrutura semântica completa</li>
+                  <li>• ARIA labels e landmarks</li>
+                  <li>• Anúncios contextuais</li>
+                </ul>
+              </div>
+              
+              <div className="bg-white bg-opacity-50 p-4 rounded">
+                <h3 className="font-semibold text-accessible-text-primary mb-2">
+                  ⌨️ Navegação por Teclado
+                </h3>
+                <ul className="text-accessible-text-primary text-sm space-y-1">
+                  <li>• Tab/Shift+Tab para navegação</li>
+                  <li>• Enter/Space para ativação</li>
+                  <li>• Escape para fechar modais</li>
+                  <li>• Atalhos Alt+Tecla para páginas</li>
+                </ul>
+              </div>
+              
+              <div className="bg-white bg-opacity-50 p-4 rounded">
+                <h3 className="font-semibold text-accessible-text-primary mb-2">
+                  🎨 Visual e Contraste
+                </h3>
+                <ul className="text-accessible-text-primary text-sm space-y-1">
+                  <li>• Contraste mínimo 4.5:1</li>
+                  <li>• Alto contraste 7:1</li>
+                  <li>• 4 níveis de tamanho de fonte</li>
+                  <li>• Foco visível em elementos</li>
+                </ul>
+              </div>
+              
+              <div className="bg-white bg-opacity-50 p-4 rounded">
+                <h3 className="font-semibold text-accessible-text-primary mb-2">
+                  ⚡ Preferências do Sistema
+                </h3>
+                <ul className="text-accessible-text-primary text-sm space-y-1">
+                  <li>• Movimento reduzido</li>
+                  <li>• Persistência de configurações</li>
+                  <li>• Detecção automática de preferências</li>
+                  <li>• Skip links para navegação rápida</li>
+                </ul>
+              </div>
+            </div>
+            
+            <div className="bg-accessible-accent bg-opacity-20 p-4 rounded border border-accessible-accent">
+              <h4 className="font-semibold text-accessible-text-primary mb-2">
+                🛠️ Ferramentas de Teste Implementadas:
+              </h4>
+              <p className="text-accessible-text-primary text-sm">
+                <strong>react-axe</strong> para auditoria automática de acessibilidade em desenvolvimento • 
+                <strong>Lighthouse</strong> para verificação de contraste e semântica • 
+                Testes com <strong>leitores de tela reais</strong> (NVDA, Orca)
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Atalhos de teclado disponíveis */}
+        <section aria-labelledby="atalhos-heading">
+          <h2 id="atalhos-heading" className="text-2xl font-semibold text-accessible-text-primary mb-4">
+            ⌨️ Atalhos de Teclado Disponíveis
+          </h2>
+          <div className="bg-accessible-bg-secondary p-6 rounded-lg border border-accessible-border">
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <h3 className="font-semibold text-accessible-text-primary mb-3">Navegação Principal:</h3>
+                <ul className="space-y-2 text-accessible-text-primary">
+                  <li><span><kbd className="bg-accessible-accent text-white [data-theme='high-contrast'] &:text-black px-2 py-1 rounded text-xs font-medium">Alt + P</kbd> Projetos</span></li>
+                  <li><span><kbd className="bg-accessible-accent text-white [data-theme='high-contrast'] &:text-black px-2 py-1 rounded text-xs font-medium">Alt + N</kbd> Novo Projeto</span></li>
+                  <li><span><kbd className="bg-accessible-accent text-white [data-theme='high-contrast'] &:text-black px-2 py-1 rounded text-xs font-medium">Alt + L</kbd> Legislação</span></li>
+                  <li><span><kbd className="bg-accessible-accent text-white [data-theme='high-contrast'] &:text-black px-2 py-1 rounded text-xs font-medium">Alt + S</kbd> Sobre</span></li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="font-semibold text-accessible-text-primary mb-3">Navegação Geral:</h3>
+                <ul className="space-y-2 text-accessible-text-primary">
+                  <li><span><kbd className="bg-accessible-accent text-white [data-theme='high-contrast'] &:text-black px-2 py-1 rounded text-xs font-medium">Tab</kbd> Próximo elemento</span></li>
+                  <li><span><kbd className="bg-accessible-accent text-white [data-theme='high-contrast'] &:text-black px-2 py-1 rounded text-xs font-medium">Shift + Tab</kbd> Elemento anterior</span></li>
+                  <li><span><kbd className="bg-accessible-accent text-white [data-theme='high-contrast'] &:text-black px-2 py-1 rounded text-xs font-medium">Enter/Space</kbd> Ativar</span></li>
+                  <li><span><kbd className="bg-accessible-accent text-white [data-theme='high-contrast'] &:text-black px-2 py-1 rounded text-xs font-medium">Esc</kbd> Fechar modal</span></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Perspectivas Futuras */}
         <section aria-labelledby="futuro-heading">
           <h2 id="futuro-heading" className="text-2xl font-semibold text-accessible-text-primary mb-4">
@@ -166,7 +335,7 @@ const Sobre: React.FC = () => {
                 <li>• Campo: Tecnologia e Legislação</li>
                 <li>• Tipo: Gerenciamento de Informações</li>
                 <li>• Data de Criação: 01/09/2025</li>
-                <li>• Status: MVP (Em Desenvolvimento)</li>
+                <li>• Status: MVP</li>
               </ul>
             </div>
           </div>

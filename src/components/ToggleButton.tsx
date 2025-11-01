@@ -15,6 +15,7 @@ const ToggleButton: React.FC<ToggleButtonProps> = ({
 }) => {
   return (
     <button
+      type="button"
       onClick={onClick}
       className={`px-3 py-1 border border-accessible-accent rounded-md transition-all duration-accessible min-h-touch ${
         selected 

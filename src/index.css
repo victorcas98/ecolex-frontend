@@ -16,6 +16,11 @@
   --color-success: #38a169;
   --color-warning: #dd6b20;
   
+  /* Cores custom acessíveis */
+  --color-custom-green: #38a169;
+  --color-custom-blue: #3182ce;
+  --color-custom-light-blue: #bee3f8;
+  
   /* Contraste mínimo 4.5:1 */
   --color-focus: #0066cc;
   --color-focus-bg: rgba(0, 102, 204, 0.1);
@@ -45,6 +50,11 @@
   --color-warning: #ffd43b;
   --color-focus: #ffde00;
   --color-focus-bg: rgba(255, 222, 0, 0.2);
+  
+  /* Cores custom em alto contraste */
+  --color-custom-green: #51cf66;
+  --color-custom-blue: #ffde00;
+  --color-custom-light-blue: #ffde00;
 }
 
 /* Tamanhos de fonte responsivos */
@@ -120,6 +130,12 @@
     text-decoration: none;
     z-index: 1000;
     font-size: var(--font-size-base);
+    font-weight: bold;
+  }
+  
+  [data-theme="high-contrast"] .skip-link {
+    color: black;
+    border: 2px solid black;
   }
   
   .skip-link:focus {
@@ -191,6 +207,24 @@
     min-width: 44px;
   }
   
+  /* Texto preto quando fundo é amarelo (alto contraste) */
+  [data-theme="high-contrast"] .btn-primary {
+    color: black;
+    border-color: rgba(0, 0, 0, 0.3);
+  }
+  
+  /* ExpandableSection no modo alto contraste */
+  [data-theme="high-contrast"] .bg-accessible-accent {
+    color: black !important;
+  }
+  
+  /* KBD elements no modo alto contraste */
+  [data-theme="high-contrast"] kbd {
+    background-color: var(--color-accent) !important;
+    color: black !important;
+    border: 1px solid black;
+  }
+  
   .btn-primary:hover {
     background-color: var(--color-accent-hover);
     border-color: var(--color-accent-hover);
@@ -203,20 +237,32 @@
   
   .btn-secondary {
     @apply px-4 py-2 rounded-md font-medium;
-    background-color: transparent;
-    color: var(--color-accent);
+    background-color: var(--color-accent);
+    color: white;
     border: 2px solid var(--color-accent);
     transition: all var(--transition-duration);
     min-height: 44px;
     min-width: 44px;
   }
   
-  .btn-secondary:hover {
+  [data-theme="high-contrast"] .btn-secondary {
     background-color: var(--color-accent);
+    color: black;
+    border-color: black;
+  }
+
+  .btn-secondary:hover {
+    background-color: var(--color-accent-hover);
     color: white;
   }
   
-  /* Inputs acessíveis */
+  [data-theme="high-contrast"] .btn-secondary:hover {
+    color: black;
+  }
+  
+  [data-theme="high-contrast"] .btn-secondary:hover {
+    color: black;
+  }  /* Inputs acessíveis */
   .input-field {
     @apply px-3 py-2 rounded-md;
     background-color: var(--color-bg-primary);

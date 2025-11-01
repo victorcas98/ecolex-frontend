@@ -37,6 +37,7 @@ const ErrorModal: React.FC<ErrorModalProps> = ({ message, onClose }) => {
         <p className="mt-2 text-accessible-text-primary">{message}</p>
         <div className="mt-4 flex justify-end">
           <button
+            type="button"
             onClick={onClose}
             className="px-4 py-2 bg-accessible-error rounded-md text-white hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-accessible-focus focus:ring-offset-2 min-h-touch"
             aria-label="Fechar modal de erro"

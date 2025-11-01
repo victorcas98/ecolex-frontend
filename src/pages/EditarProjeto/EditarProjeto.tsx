@@ -171,10 +171,15 @@ export const EditarProjeto: React.FC = () => {
                     {tema.requisitos.map((requisito, requisitoIndex) => (
                       <div key={requisitoIndex} className="flex items-center justify-between p-2 bg-accessible-bg-primary rounded border border-accessible-border">
                         <span className="flex-1 text-accessible-text-primary">{requisito.requisito}</span>
+                        <label htmlFor={`status-${temaIndex}-${requisitoIndex}`} className="sr-only">
+                          Status do requisito: {requisito.requisito}
+                        </label>
                         <select
+                          id={`status-${temaIndex}-${requisitoIndex}`}
                           value={requisito.status}
                           onChange={(e) => atualizarStatusRequisito(temaIndex, requisitoIndex, e.target.value)}
-                          className="ml-4 px-3 py-1 border rounded"
+                          className="ml-4 px-3 py-1 border rounded text-accessible-text-primary bg-accessible-bg-primary border-accessible-border focus:border-accessible-focus focus:outline-none focus:ring-2 focus:ring-accessible-focus"
+                          aria-label={`Status do requisito: ${requisito.requisito}`}
                         >
                           <option value="pendente">⏳ Pendente</option>
                           <option value="concluido">✅ Concluído</option>

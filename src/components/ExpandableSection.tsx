@@ -32,27 +32,30 @@ const ExpandableSection: React.FC<ExpandableSectionProps> = ({
   };
 
   return (
-    <div className={`border border-custom-blue rounded-md ${className}`}>
+    <div className={`border border-accessible-border rounded-md ${className}`}>
       <button
+        type="button"
         onClick={handleToggle}
         onKeyDown={handleKeyDown}
-        className="w-full p-3 bg-custom-blue text-white text-left flex justify-between items-center hover:bg-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-accessible-focus focus:ring-offset-2 min-h-touch"
+        className="w-full p-3 bg-accessible-accent text-white hover:bg-accessible-accent-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accessible-focus focus:ring-offset-2 min-h-touch font-medium [data-theme='high-contrast'] &:text-black"
         aria-expanded={expanded}
         aria-label={`${expanded ? 'Ocultar' : 'Mostrar'} seção ${title}`}
       >
-        <span className="font-medium">{title}</span>
-        <span
-          className={`transform transition-transform ${
-            expanded ? "rotate-180" : ""
-          }`}
-          aria-hidden="true"
-        >
-          ▼
+        <span className="flex justify-between items-center text-left w-full">
+          <span>{title}</span>
+          <span
+            className={`transform transition-transform ${
+              expanded ? "rotate-180" : ""
+            }`}
+            aria-hidden="true"
+          >
+            ▼
+          </span>
         </span>
       </button>
       
       {expanded && (
-        <div className="p-4 bg-accessible-bg-primary border-t border-custom-blue">
+        <div className="p-4 bg-accessible-bg-primary border-t border-accessible-border">
           {children}
         </div>
       )}

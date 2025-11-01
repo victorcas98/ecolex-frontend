@@ -5,28 +5,28 @@ import type { RequisitoStatus } from '../types/projeto';
 interface EvidenciaModalProps {
   requisito: RequisitoStatus;
   onClose: () => void;
-  onSave: (evidencia: string, data: string, anexos: File[]) => void;
+  onSave: (registro: string, data: string, anexos: File[]) => void;
 }
 
 const EvidenciaModal: React.FC<EvidenciaModalProps> = ({ requisito, onClose, onSave }) => {
-  const [evidencia, setEvidencia] = useState(requisito.evidencia || '');
+  const [registro, setRegistro] = useState(requisito.evidencia || '');
   const [data, setData] = useState(new Date().toISOString().split('T')[0]); // Data atual
   const [anexos, setAnexos] = useState<File[]>([]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
-    if (files) {
-      const novosAnexos = Array.from(files).slice(0, 3); // Máximo 3 arquivos
-      setAnexos(novosAnexos);
+    if (files && files.length > 0) {
+      // Aceita apenas 1 arquivo
+      setAnexos([files[0]]);
     }
   };
 
   const handleSave = () => {
-    if (!evidencia.trim()) {
-      alert('Por favor, preencha a evidência/observação');
+    if (!registro.trim()) {
+      alert('Por favor, preencha o registro da evidência');
       return;
     }
-    onSave(evidencia, data, anexos);
+    onSave(registro, data, anexos);
   };
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
@@ -54,6 +54,7 @@ const EvidenciaModal: React.FC<EvidenciaModalProps> = ({ requisito, onClose, onS
             Registrar Evidências
           </h2>
           <button 
+            type="button"
             onClick={onClose}
             className="text-accessible-text-secondary hover:text-accessible-text-primary text-2xl focus:outline-none focus:ring-2 focus:ring-accessible-focus focus:ring-offset-2 rounded"
             aria-label="Fechar modal"
@@ -74,20 +75,20 @@ const EvidenciaModal: React.FC<EvidenciaModalProps> = ({ requisito, onClose, onS
 
         {/* Evidência/Observação */}
         <div className="mb-6">
-          <label htmlFor="evidencia-textarea" className="block text-sm font-medium text-accessible-text-primary mb-2">
-            Evidência/Observação <span className="text-accessible-error">*</span>
+          <label htmlFor="registro-textarea" className="block text-sm font-medium text-accessible-text-primary mb-2">
+            Registro da Evidência <span className="text-accessible-error">*</span>
           </label>
           <textarea
-            id="evidencia-textarea"
-            value={evidencia}
-            onChange={(e) => setEvidencia(e.target.value)}
+            id="registro-textarea"
+            value={registro}
+            onChange={(e) => setRegistro(e.target.value)}
             className="w-full p-3 border border-accessible-border rounded-md bg-accessible-bg-primary text-accessible-text-primary focus:ring-2 focus:ring-accessible-focus focus:border-accessible-focus"
             rows={4}
-            placeholder="Descreva a evidência ou observação..."
+            placeholder="Descreva detalhadamente a evidência encontrada..."
             required
-            aria-describedby="evidencia-help"
+            aria-describedby="registro-help"
           />
-          <p id="evidencia-help" className="text-sm text-accessible-text-secondary mt-1">
+          <p id="registro-help" className="text-sm text-accessible-text-secondary mt-1">
             Campo obrigatório. Descreva detalhadamente a evidência encontrada.
           </p>
         </div>
@@ -95,7 +96,7 @@ const EvidenciaModal: React.FC<EvidenciaModalProps> = ({ requisito, onClose, onS
         {/* Data de VCL */}
         <div className="mb-6">
           <label htmlFor="data-vcl" className="block text-sm font-medium text-accessible-text-primary mb-2">
-            Data de VCL
+            Data de validade
           </label>
           <input
             id="data-vcl"
@@ -118,7 +119,6 @@ const EvidenciaModal: React.FC<EvidenciaModalProps> = ({ requisito, onClose, onS
           <div className="space-y-3">
             <input
               type="file"
-              multiple
               accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
               onChange={handleFileChange}
               className="hidden"
@@ -127,7 +127,7 @@ const EvidenciaModal: React.FC<EvidenciaModalProps> = ({ requisito, onClose, onS
             />
             <label
               htmlFor="file-input"
-              className="inline-block bg-accessible-accent text-white px-4 py-2 rounded-md cursor-pointer hover:bg-accessible-accent-hover text-sm focus:outline-none focus:ring-2 focus:ring-accessible-focus focus:ring-offset-2 min-h-touch"
+              className="inline-block bg-accessible-accent text-black px-4 py-2 rounded-md cursor-pointer hover:bg-accessible-accent-hover text-sm focus:outline-none focus:ring-2 focus:ring-accessible-focus focus:ring-offset-2 min-h-touch border border-black border-opacity-20 font-medium"
               tabIndex={0}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
@@ -144,15 +144,18 @@ const EvidenciaModal: React.FC<EvidenciaModalProps> = ({ requisito, onClose, onS
                 <p className="text-sm text-accessible-text-primary mb-2">Arquivos selecionados:</p>
                 <ul className="text-sm text-accessible-text-primary space-y-1" role="list">
                   {anexos.map((arquivo, index) => (
-                    <li key={index} className="flex items-center justify-between py-1 px-2 bg-accessible-bg-secondary rounded">
-                      <span>{arquivo.name}</span>
-                      <button
-                        onClick={() => setAnexos(prev => prev.filter((_, i) => i !== index))}
-                        className="text-accessible-error hover:text-red-700 ml-2 focus:outline-none focus:ring-2 focus:ring-accessible-focus focus:ring-offset-2 rounded px-1"
-                        aria-label={`Remover arquivo ${arquivo.name}`}
-                      >
-                        ×
-                      </button>
+                    <li key={index} className="py-1 px-2 bg-accessible-bg-secondary rounded">
+                      <div className="flex items-center justify-between">
+                        <span>{arquivo.name}</span>
+                        <button
+                          type="button"
+                          onClick={() => setAnexos(prev => prev.filter((_, i) => i !== index))}
+                          className="text-accessible-error hover:text-red-700 ml-2 focus:outline-none focus:ring-2 focus:ring-accessible-focus focus:ring-offset-2 rounded px-1"
+                          aria-label={`Remover arquivo ${arquivo.name}`}
+                        >
+                          ×
+                        </button>
+                      </div>
                     </li>
                   ))}
                 </ul>
@@ -160,7 +163,7 @@ const EvidenciaModal: React.FC<EvidenciaModalProps> = ({ requisito, onClose, onS
             )}
             
             <p id="file-help" className="text-sm text-accessible-text-secondary">
-              {anexos.length === 0 ? 'Máximo 3 arquivos (PDF, DOC, DOCX, JPG, JPEG, PNG)' : `${anexos.length}/3 arquivos selecionados`}
+              {anexos.length === 0 ? '(PDF, DOC, DOCX, JPG, JPEG, PNG)' : '1 arquivo selecionado'}
             </p>
           </div>
         </div>
@@ -177,7 +180,7 @@ const EvidenciaModal: React.FC<EvidenciaModalProps> = ({ requisito, onClose, onS
           <Button
             onClick={handleSave}
             className="px-8"
-            disabled={!evidencia.trim()}
+            disabled={!registro.trim()}
           >
             Salvar
           </Button>

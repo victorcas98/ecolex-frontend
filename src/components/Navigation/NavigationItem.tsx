@@ -26,15 +26,14 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
   };
 
   return (
-    <li role="none">
+    <li>
       <Link 
         to={destiny}
-        className={`flex items-center p-3 hover:bg-white hover:bg-opacity-10 rounded-lg transition-all duration-accessible font-medium min-h-touch focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 ${
+        className={`flex items-center p-3 hover:bg-white hover:bg-opacity-20 rounded-lg transition-all duration-accessible font-medium min-h-touch focus:outline-none focus:ring-2 focus:ring-black focus:ring-opacity-50 ${
           isActive 
-            ? 'text-white bg-white bg-opacity-20' 
-            : 'text-white hover:text-gray-200'
+            ? 'text-black bg-white bg-opacity-30 font-semibold' 
+            : 'text-black hover:text-black hover:bg-opacity-15'
         }`}
-        role="menuitem"
         aria-label={ariaLabel || label}
         aria-current={isActive ? 'page' : undefined}
         accessKey={accessKey}
@@ -43,7 +42,7 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
       >
         <span>{label}</span>
         {accessKey && (
-          <span className="ml-auto text-xs opacity-70">
+          <span className="ml-auto text-xs text-black font-semibold">
             Alt+{accessKey.toUpperCase()}
           </span>
         )}

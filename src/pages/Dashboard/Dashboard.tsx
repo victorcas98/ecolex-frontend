@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Title from '../../components/Title';
 import TemaCard from '../../components/TemaCard';
-import Button from '../../components/Button';
 import { useProjetos } from '../../hooks/useProjetos';
 import { useProjetoStats } from '../../hooks/useProjetoStats';
 
@@ -20,10 +19,6 @@ const Dashboard: React.FC = () => {
 
   const handleTemaClick = (temaNome: string) => {
     navigate(`/dashboard/${id}/detalhes?tema=${encodeURIComponent(temaNome)}`);
-  };
-
-  const handleEditarProjeto = () => {
-    navigate(`/projeto/${id}/editar`);
   };
 
   if (loading) {
@@ -44,11 +39,8 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="w-full h-screen">
-      <div className="flex justify-between items-center px-8 pt-4">
+      <div className="px-8 pt-4">
         <Title title={projeto.nome} />
-        <Button onClick={handleEditarProjeto} theme="transparent">
-          Editar Projeto
-        </Button>
       </div>
       
       <div className="p-8">

@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface ButtonProps {
-  onClick: () => void;
+  onClick?: () => void;
   disabled?: boolean;
   children: React.ReactNode;
   className?: string;
@@ -25,13 +25,13 @@ const Button: React.FC<ButtonProps> = ({
 }) => {
 
  const ButtonTheme = {
-  primary: "text-white bg-accessible-accent hover:bg-accessible-accent-hover focus:ring-accessible-focus",
-  secondary: "text-white bg-custom-blue hover:bg-blue-600 focus:ring-accessible-focus",
+  primary: "btn-primary",
+  secondary: "btn-secondary", 
   transparent: "text-accessible-accent bg-transparent hover:bg-accessible-bg-secondary border border-accessible-accent focus:ring-accessible-focus"
 };
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter' || event.key === ' ') {
+    if (onClick && (event.key === 'Enter' || event.key === ' ')) {
       event.preventDefault();
       if (!disabled && !loading) {
         onClick();
@@ -53,7 +53,7 @@ const Button: React.FC<ButtonProps> = ({
       className={`px-4 py-2 rounded-md transition-all duration-accessible font-medium min-h-touch min-w-touch
         focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-opacity-50
         ${isDisabled
-          ? 'bg-gray-400 text-gray-600 cursor-not-allowed opacity-60'
+          ? 'bg-accessible-text-secondary text-accessible-bg-primary cursor-not-allowed opacity-60'
           : ButtonTheme[theme]
         } ${loading ? 'loading' : ''} ${className}`}
     >

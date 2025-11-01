@@ -18,7 +18,6 @@ const Layout: React.FC = () => {
       {/* Navegação lateral */}
       <aside 
         className="flex-shrink-0"
-        role="navigation"
         aria-label="Navegação principal"
       >
         <Navigation />
@@ -29,7 +28,6 @@ const Layout: React.FC = () => {
         {/* Cabeçalho com controles de acessibilidade */}
         <header 
           className="bg-accessible-bg-primary border-b border-accessible-border p-4 flex justify-end items-center"
-          role="banner"
         >
           <AccessibilityControls />
         </header>
@@ -38,7 +36,6 @@ const Layout: React.FC = () => {
         <main 
           id="main-content"
           className='flex-1 overflow-y-auto'
-          role="main"
           tabIndex={-1}
           aria-label="Conteúdo principal"
         >

@@ -62,6 +62,7 @@ export const AccessibilityControls: React.FC<AccessibilityControlsProps> = ({
     <div className={`relative ${className}`}>
       {/* Botão para abrir controles */}
       <button
+        type="button"
         onClick={() => setIsOpen(!isOpen)}
         onKeyDown={handleKeyDown}
         className="btn-secondary flex items-center gap-2 p-2"
@@ -110,6 +111,7 @@ export const AccessibilityControls: React.FC<AccessibilityControlsProps> = ({
                   Acessibilidade
                 </h3>
                 <button
+                  type="button"
                   onClick={() => setIsOpen(false)}
                   className="p-1 rounded hover:bg-accessible-bg-secondary"
                   aria-label="Fechar controles de acessibilidade"
@@ -140,6 +142,7 @@ export const AccessibilityControls: React.FC<AccessibilityControlsProps> = ({
                   Alto Contraste
                 </label>
                 <button
+                  type="button"
                   id="high-contrast-toggle"
                   onClick={handleToggleHighContrast}
                   className={`relative inline-flex h-6 w-11 rounded-full transition-colors ${
@@ -168,6 +171,7 @@ export const AccessibilityControls: React.FC<AccessibilityControlsProps> = ({
                 <div className="flex gap-2" role="radiogroup" aria-label="Tamanho da fonte">
                   {Object.entries(fontSizeLabels).map(([size, label]) => (
                     <button
+                      type="button"
                       key={size}
                       onClick={() => handleFontSizeChange(size as typeof preferences.fontSize)}
                       className={`px-3 py-2 rounded border text-sm font-medium transition-colors ${
@@ -194,6 +198,7 @@ export const AccessibilityControls: React.FC<AccessibilityControlsProps> = ({
                   Reduzir Movimento
                 </label>
                 <button
+                  type="button"
                   id="reduced-motion-toggle"
                   onClick={handleToggleReducedMotion}
                   className={`relative inline-flex h-6 w-11 rounded-full transition-colors ${
@@ -223,6 +228,7 @@ export const AccessibilityControls: React.FC<AccessibilityControlsProps> = ({
                   Anúncios Sonoros
                 </label>
                 <button
+                  type="button"
                   id="screen-reader-toggle"
                   onClick={handleToggleScreenReaderAnnouncements}
                   className={`relative inline-flex h-6 w-11 rounded-full transition-colors ${
@@ -246,6 +252,7 @@ export const AccessibilityControls: React.FC<AccessibilityControlsProps> = ({
               {/* Botão Reset */}
               <div className="border-t border-accessible-border pt-4">
                 <button
+                  type="button"
                   onClick={handleReset}
                   className="w-full btn-secondary text-sm"
                   aria-label="Redefinir todas as preferências de acessibilidade"

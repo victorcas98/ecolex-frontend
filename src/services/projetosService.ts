@@ -112,7 +112,7 @@ const projetosService = {
     }
   },
 
-  // PUT /api/projetos/:id/temas/:temaId/requisitos/:requisitoId/evidencia - Salvar evidência
+  // POST /api/projetos/:id/temas/:temaId/requisitos/:requisitoId/evidencias - Salvar evidência
   salvarEvidencia: async (
     projetoId: string,
     temaId: string,
@@ -121,9 +121,9 @@ const projetosService = {
   ): Promise<Projeto> => {
     try {
       const formData = new FormData();
-      formData.append('evidencia', evidenciaData.evidencia);
+      formData.append('registro', evidenciaData.evidencia); // API espera 'registro', não 'evidencia'
       if (evidenciaData.data) {
-        formData.append('data', evidenciaData.data);
+        formData.append('dataValidade', evidenciaData.data); // API espera 'dataValidade', não 'data'
       }
       evidenciaData.anexos.forEach((arquivo) => {
         formData.append('anexo', arquivo);

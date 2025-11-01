@@ -5,7 +5,6 @@ import Legislacao from '../pages/Legislacao';
 import CadastroProjeto from '../pages/CadastroProjeto';
 import Dashboard from '../pages/Dashboard';
 import TemaDetalhes from '../pages/Dashboard/TemaDetalhes';
-import { EditarProjeto } from '../pages/EditarProjeto';
 import Sobre from '../pages/Sobre';
 
 const router = createBrowserRouter([
@@ -32,10 +31,6 @@ const router = createBrowserRouter([
       {
         path: 'dashboard/:id/detalhes',
         element: <TemaDetalhes />,
-      },
-      {
-        path: 'projeto/:id/editar',
-        element: <EditarProjeto />,
       },
       {
         path: 'sobre',

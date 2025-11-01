@@ -5,18 +5,16 @@ import './index.css'
 import router from './routes'
 import { AppProvider } from './contexts/AppProvider'
 import { AccessibilityProvider } from './contexts'
+import React from 'react'
 
 // Configuração do react-axe em desenvolvimento
-// Descomente após instalar: npm install react-axe --save-dev
-/*
-if (import.meta.env.MODE === 'development') {
-  import('react-axe').then((axe) => {
-    const React = require('react');
-    const ReactDOM = require('react-dom/client');
-    axe.default(React, ReactDOM, 1000);
-  }).catch(console.error);
-}
-*/
+// if (import.meta.env.MODE === 'development') {
+//   import('react-axe').then((axe) => {
+//     axe.default(React, createRoot, 1000);
+//   }).catch(() => {
+//     // react-axe não instalado, ignorar silenciosamente
+//   });
+// }
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

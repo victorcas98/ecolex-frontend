@@ -5,8 +5,7 @@ import NavigationItem from './NavigationItem';
 const Navigation: React.FC = () => {
   return (
     <nav 
-      className="w-64 h-screen bg-custom-green p-6 shadow-lg"
-      role="navigation"
+      className="w-64 h-screen bg-accessible-accent p-6 shadow-lg"
       aria-label="Menu principal de navegação"
     >
       {/* Logo */}
@@ -15,14 +14,12 @@ const Navigation: React.FC = () => {
           src={ecolexLogo} 
           alt="EcoLex - Sistema de Gestão de Conformidade Ambiental" 
           className="h-8 w-auto"
-          role="img"
         />
       </div>
       
       {/* Menu Items */}
       <ul 
         className="space-y-4"
-        role="menubar"
         aria-label="Menu de navegação"
       >
         <NavigationItem 
@@ -52,7 +49,7 @@ const Navigation: React.FC = () => {
       </ul>
       
       {/* Informação de atalhos */}
-      <div className="mt-8 p-3 bg-white bg-opacity-10 rounded text-white text-xs">
+      <div className="mt-8 p-3 bg-white bg-opacity-20 rounded text-black text-xs border border-black border-opacity-20">
         <p className="font-semibold mb-1">Atalhos de teclado:</p>
         <ul className="space-y-1">
           <li>Alt + P: Projetos</li>

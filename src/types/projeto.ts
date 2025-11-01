@@ -11,12 +11,19 @@ export interface TemaProjeto {
   requisitos: RequisitoStatus[];
 }
 
+export interface Anexo {
+  nome: string;
+  caminho: string;
+  data: string;
+}
+
 export interface RequisitoStatus {
   id: string;
   nome: string;
   status: 'pendente' | 'concluido'; // ✅ Apenas status válidos
   evidencia: string; // apenas uma string
-  anexo: File[]; // array de arquivos (até 3)
+  dataValidade?: string; // data de validade da evidência
+  anexo: Anexo[]; // array de anexos salvos
   leisIds: string[];
 }
 

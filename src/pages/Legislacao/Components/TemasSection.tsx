@@ -37,9 +37,11 @@ const TemasSection: React.FC<TemasSectionProps> = ({
     return temas
       .filter((tema) => temasIds?.includes(String(tema.id)))
       .map((tema) => (
-        <li
+        <div
           key={tema.id}
           className="px-3 bg-accessible-bg-secondary text-accessible-accent rounded-md border border-accessible-border"
+          role="group"
+          aria-labelledby={`tema-${tema.id}-label`}
         >
           <div className="flex justify-between items-center">
             <Label theme="secondary" text={tema.nome} />
@@ -59,7 +61,7 @@ const TemasSection: React.FC<TemasSectionProps> = ({
             <Label text="Requisitos" />
             <RequisitosSection temaId={String(tema.id)} />
           </div>
-        </li>
+        </div>
       ));
   }, [setTemasIds, temas, temasIds]);
 
@@ -76,7 +78,6 @@ const TemasSection: React.FC<TemasSectionProps> = ({
         setNewTemaName("");
         getAllTemas();
 
-        // fechar dropdown: remover foco e disparar clique fora (caso o Dropdown feche ao clicar fora)
         if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
         setTimeout(() => document.body.click(), 0);
       });
@@ -115,8 +116,8 @@ const TemasSection: React.FC<TemasSectionProps> = ({
       </div>
       {/* Lista de temas adicionados */}
       {temasIds?.length !== undefined && temasIds?.length > 0 && (
-        <div className="space-y-2 pt-3">
-          <ul className="space-y-1">{temasToShow}</ul>
+        <div className="space-y-2 pt-3" role="region" aria-label="Temas selecionados">
+          <div className="space-y-1">{temasToShow}</div>
         </div>
       )}
     </div>

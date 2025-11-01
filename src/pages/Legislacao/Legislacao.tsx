@@ -21,6 +21,7 @@ const Legislacao: React.FC = () => {
 
 
   const handleSubmit = async () => {
+    console.log("Iniciando submissão da legislação...");
     try {
       clearError();
       const leiData: CreateLeiData = {
@@ -141,7 +142,7 @@ const Legislacao: React.FC = () => {
                       setSelectedFile(file);
                     }
                   }}
-                  className="w-full rounded-md file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-accessible-accent file:text-white hover:file:bg-accessible-accent-hover cursor-pointer focus:outline-none focus:ring-2 focus:ring-accessible-focus focus:ring-offset-2"
+                  className="w-full rounded-md file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-accessible-accent file:text-black hover:file:bg-accessible-accent-hover cursor-pointer focus:outline-none focus:ring-2 focus:ring-accessible-focus focus:ring-offset-2 file:border file:border-black file:border-opacity-20"
                   aria-label="Selecionar arquivo PDF da legislação"
                   required
                 />
@@ -165,7 +166,6 @@ const Legislacao: React.FC = () => {
                 (toggleType === "link" ? url.trim().length < 5 : selectedFile === null)
               }
               className="w-[40%]"
-              onClick={handleSubmit}
               type="submit"
               loading={loading}
               ariaLabel={loading ? "Cadastrando legislação..." : "Cadastrar nova legislação"}
