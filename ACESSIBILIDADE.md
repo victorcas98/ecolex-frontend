@@ -8,7 +8,7 @@ Execute os seguintes comandos no terminal WSL:
 
 ```bash
 # Navegue para o diretório do projeto
-cd /home/victor/projects/tcc-frontend
+cd /home/victor/projects/ecolex-frontend
 
 # Instale as dependências de acessibilidade
 npm install react-axe --save-dev
