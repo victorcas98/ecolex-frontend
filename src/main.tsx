@@ -5,7 +5,6 @@ import './index.css'
 import router from './routes'
 import { AppProvider } from './contexts/AppProvider'
 import { AccessibilityProvider } from './contexts'
-import React from 'react'
 
 // Configuração do react-axe em desenvolvimento
 // if (import.meta.env.MODE === 'development') {

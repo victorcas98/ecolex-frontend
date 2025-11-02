@@ -10,7 +10,6 @@ interface UseTemas {
   error: string | null;
 
   getAllTemas: () => Promise<void>;
-  getSemLei: () => Promise<void>;
   getTemaById: (id: string | number) => Promise<Tema | null>;
   createTema: (temaData: CreateTemaData) => Promise<Tema | null>;
   updateTema: (id: string | number, temaData: UpdateTemaData) => Promise<Tema | null>;
@@ -38,22 +37,6 @@ export const useTemas = (): UseTemas => {
       const message = err instanceof Error ? err.message : 'Erro ao buscar temas';
       setError(message);
       console.error('Erro ao buscar temas:', err);
-      showError(message);
-    } finally {
-      setLoading(false);
-    }
-  }, [showError]);
-
-  const getSemLei = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await temasService.getSemLei();
-      setTemas(data);
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Erro ao buscar temas sem lei';
-      setError(message);
-      console.error('Erro ao buscar temas sem lei:', err);
       showError(message);
     } finally {
       setLoading(false);
@@ -140,7 +123,6 @@ export const useTemas = (): UseTemas => {
     error,
     clearError,
     getAllTemas,
-    getSemLei,
     getTemaById,
     createTema,
     updateTema,
