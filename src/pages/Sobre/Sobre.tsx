@@ -59,6 +59,26 @@ const Sobre: React.FC = () => {
           <li>
             <button 
               type="button"
+              onClick={() => scrollToSection('como-funciona-heading')}
+              className="text-accessible-accent hover:text-accessible-accent-hover underline focus:outline-none focus:ring-2 focus:ring-accessible-accent focus:ring-offset-2"
+              aria-label="Ir para seção: Como Funciona o Sistema"
+            >
+              Como Funciona
+            </button>
+          </li>
+          <li>
+            <button 
+              type="button"
+              onClick={() => scrollToSection('evidencias-heading')}
+              className="text-accessible-accent hover:text-accessible-accent-hover underline focus:outline-none focus:ring-2 focus:ring-accessible-accent focus:ring-offset-2"
+              aria-label="Ir para seção: Gestão de Evidências"
+            >
+              Evidências
+            </button>
+          </li>
+          <li>
+            <button 
+              type="button"
               onClick={() => scrollToSection('acessibilidade-heading')}
               className="text-accessible-accent hover:text-accessible-accent-hover underline focus:outline-none focus:ring-2 focus:ring-accessible-accent focus:ring-offset-2"
               aria-label="Ir para seção: Recursos de Acessibilidade"
@@ -145,6 +165,243 @@ const Sobre: React.FC = () => {
                 Registre evidências de conformidade, documentos e observações para 
                 auditorias e verificações.
               </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Como funciona o sistema */}
+        <section aria-labelledby="como-funciona-heading">
+          <h2 id="como-funciona-heading" className="text-2xl font-semibold text-accessible-text-primary mb-4">
+            📖 Como Funciona o Sistema
+          </h2>
+          
+          {/* Estrutura Hierárquica */}
+          <div className="bg-accessible-bg-secondary p-6 rounded-lg border border-accessible-border mb-6">
+            <h3 className="text-xl font-semibold text-accessible-text-primary mb-4">
+              🏗️ Estrutura Hierárquica
+            </h3>
+            <p className="text-accessible-text-primary mb-4">
+              O EcoLex organiza as informações em uma estrutura hierárquica de 4 níveis:
+            </p>
+            <div className="space-y-4">
+              <div className="bg-accessible-bg-primary p-4 rounded border-l-4 border-accessible-accent">
+                <h4 className="font-semibold text-accessible-text-primary mb-2">1. 📚 Legislação (Lei)</h4>
+                <p className="text-accessible-text-primary text-sm">
+                  Representa uma norma, lei ou regulamento ambiental. Exemplo: "Lei nº 12.305/2010 - Política Nacional de Resíduos Sólidos".
+                  Pode conter um link externo ou documento PDF anexado.
+                </p>
+              </div>
+              
+              <div className="bg-accessible-bg-primary p-4 rounded border-l-4 border-accessible-success">
+                <h4 className="font-semibold text-accessible-text-primary mb-2">2. 📑 Tema</h4>
+                <p className="text-accessible-text-primary text-sm">
+                  Agrupa requisitos relacionados a um assunto específico dentro de uma legislação. 
+                  Exemplos: "Conservação da Biodiversidade", "Saúde e Segurança do Trabalho", "Gestão de Resíduos".
+                  Um tema pertence a uma ou mais leis.
+                </p>
+              </div>
+              
+              <div className="bg-accessible-bg-primary p-4 rounded border-l-4 border-accessible-warning">
+                <h4 className="font-semibold text-accessible-text-primary mb-2">3. ✅ Requisito</h4>
+                <p className="text-accessible-text-primary text-sm">
+                  Representa uma obrigação legal específica que deve ser atendida. 
+                  Exemplos: "Realizar Estudo de Impacto Ambiental", "Manter Registro de Resíduos Perigosos".
+                  Um requisito pertence a um tema específico.
+                </p>
+              </div>
+              
+              <div className="bg-accessible-bg-primary p-4 rounded border-l-4 border-blue-500">
+                <h4 className="font-semibold text-accessible-text-primary mb-2">4. 🏢 Projeto</h4>
+                <p className="text-accessible-text-primary text-sm">
+                  Representa uma implementação específica na sua organização. Você seleciona quais requisitos 
+                  são aplicáveis ao projeto e acompanha o atendimento de cada um.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Como criar uma legislação */}
+          <div className="bg-accessible-success bg-opacity-10 p-6 rounded-lg border border-accessible-success mb-6">
+            <h3 className="text-xl font-semibold text-accessible-success mb-4">
+              📝 Como Cadastrar uma Legislação
+            </h3>
+            <ol className="space-y-3 text-accessible-text-primary list-decimal list-inside">
+              <li>
+                <strong>Acesse a página "Legislação"</strong> através do menu (Alt + L)
+              </li>
+              <li>
+                <strong>Preencha o nome da lei:</strong> Digite o nome completo da legislação (ex: "Lei nº 6.938/1981 - Política Nacional do Meio Ambiente")
+              </li>
+              <li>
+                <strong>Escolha a origem:</strong> Selecione se deseja adicionar um link externo ou fazer upload de um documento PDF
+              </li>
+              <li>
+                <strong>Cadastre ou selecione temas:</strong> 
+                <ul className="ml-8 mt-2 space-y-1 list-disc">
+                  <li>Clique em "+ Criar novo tema" para adicionar um tema inédito</li>
+                  <li>Ou selecione temas já existentes na lista</li>
+                  <li>Para cada tema, você pode adicionar requisitos específicos</li>
+                </ul>
+              </li>
+              <li>
+                <strong>Adicione requisitos aos temas:</strong>
+                <ul className="ml-8 mt-2 space-y-1 list-disc">
+                  <li>Clique em "+ Adicionar requisito" dentro de cada tema</li>
+                  <li>Digite o nome do requisito (ex: "Obter Licença Prévia")</li>
+                </ul>
+              </li>
+              <li>
+                <strong>Clique em "Cadastrar"</strong> para salvar a legislação
+              </li>
+            </ol>
+            <div className="mt-4 p-3 bg-white bg-opacity-50 rounded">
+              <p className="text-sm text-accessible-text-primary">
+                <strong>💡 Dica:</strong> É obrigatório ter pelo menos um tema e um requisito antes de cadastrar a lei.
+              </p>
+            </div>
+          </div>
+
+          {/* Como criar um projeto */}
+          <div className="bg-accessible-accent bg-opacity-10 p-6 rounded-lg border border-accessible-accent mb-6">
+            <h3 className="text-xl font-semibold text-accessible-accent mb-4">
+              🏗️ Como Criar um Projeto
+            </h3>
+            <ol className="space-y-3 text-accessible-text-primary list-decimal list-inside">
+              <li>
+                <strong>Acesse "Novo Projeto"</strong> através do menu (Alt + N) ou pelo botão na página inicial
+              </li>
+              <li>
+                <strong>Digite o nome do projeto:</strong> Escolha um nome descritivo (ex: "Projeto de Expansão Industrial 2025")
+              </li>
+              <li>
+                <strong>Selecione os requisitos aplicáveis:</strong>
+                <ul className="ml-8 mt-2 space-y-1 list-disc">
+                  <li>O sistema exibirá todos os temas cadastrados</li>
+                  <li>Expanda cada tema clicando nele para ver seus requisitos</li>
+                  <li>Marque os requisitos que se aplicam ao seu projeto</li>
+                  <li>Você não precisa incluir todos - apenas os relevantes</li>
+                </ul>
+              </li>
+              <li>
+                <strong>Clique em "Cadastrar Projeto"</strong> para criar
+              </li>
+              <li>
+                <strong>Todos os requisitos selecionados</strong> começarão com status "Pendente" (vermelho)
+              </li>
+            </ol>
+            <div className="mt-4 p-3 bg-white bg-opacity-50 rounded">
+              <p className="text-sm text-accessible-text-primary">
+                <strong>⚠️ Importante:</strong> Você precisa ter cadastrado legislações, temas e requisitos antes de criar um projeto.
+              </p>
+            </div>
+          </div>
+
+          {/* Sistema de Status e Cores */}
+          <div className="bg-accessible-bg-secondary p-6 rounded-lg border border-accessible-border">
+            <h3 className="text-xl font-semibold text-accessible-text-primary mb-4">
+              🎨 Sistema de Status e Cores
+            </h3>
+            <p className="text-accessible-text-primary mb-4">
+              O EcoLex utiliza um sistema visual intuitivo baseado em cores para indicar o status de conformidade dos requisitos:
+            </p>
+            
+            <div className="space-y-4">
+              <div className="flex items-start space-x-3">
+                <div className="w-16 h-16 bg-red-500 rounded flex items-center justify-center text-white font-bold flex-shrink-0">
+                  ⚠️
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-semibold text-accessible-text-primary mb-1">
+                    Pendente (Vermelho)
+                  </h4>
+                  <p className="text-accessible-text-primary text-sm">
+                    <strong>Status inicial de todos os requisitos.</strong> Indica que o requisito ainda não foi atendido 
+                    e precisa de ação. Nenhuma evidência foi registrada.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start space-x-3">
+                <div className="w-16 h-16 bg-green-500 rounded flex items-center justify-center text-white font-bold flex-shrink-0">
+                  ✓
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-semibold text-accessible-text-primary mb-1">
+                    Concluído (Verde)
+                  </h4>
+                  <p className="text-accessible-text-primary text-sm">
+                    <strong>Requisito atendido.</strong> Indica que o requisito foi cumprido e há evidências registradas.
+                    É necessário adicionar uma evidência (descrição de como foi atendido) para mudar para este status.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6 p-4 bg-accessible-accent bg-opacity-10 rounded border border-accessible-accent">
+              <h4 className="font-semibold text-accessible-text-primary mb-2">
+                📊 Cálculo de Progresso do Projeto
+              </h4>
+              <p className="text-accessible-text-primary text-sm mb-2">
+                O sistema calcula automaticamente o percentual de conformidade:
+              </p>
+              <div className="bg-white bg-opacity-50 p-3 rounded font-mono text-sm">
+                <p className="text-accessible-text-primary">
+                  Progresso = (Requisitos Concluídos ÷ Total de Requisitos) × 100%
+                </p>
+              </div>
+              <p className="text-accessible-text-primary text-sm mt-2">
+                <strong>Exemplo:</strong> Se um projeto tem 10 requisitos e 7 estão concluídos, o progresso é 70%.
+              </p>
+            </div>
+
+            <div className="mt-4 p-4 bg-accessible-success bg-opacity-10 rounded border border-accessible-success">
+              <h4 className="font-semibold text-accessible-success mb-2">
+                ✅ Quando um Projeto está "Pronto"?
+              </h4>
+              <p className="text-accessible-text-primary text-sm">
+                Um projeto é considerado <strong>100% conforme</strong> quando todos os requisitos selecionados 
+                estão com status "Concluído" (verde) e possuem evidências registradas. Isso significa que 
+                a organização está atendendo integralmente aos requisitos legais aplicáveis ao projeto.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Gestão de Evidências */}
+        <section aria-labelledby="evidencias-heading">
+          <h2 id="evidencias-heading" className="text-2xl font-semibold text-accessible-text-primary mb-4">
+            📎 Gestão de Evidências
+          </h2>
+          <div className="bg-accessible-bg-secondary p-6 rounded-lg border border-accessible-border">
+            <p className="text-accessible-text-primary mb-4">
+              Para comprovar o atendimento aos requisitos legais, você pode registrar evidências:
+            </p>
+            
+            <div className="space-y-4">
+              <div className="bg-accessible-bg-primary p-4 rounded">
+                <h4 className="font-semibold text-accessible-text-primary mb-2">
+                  Como Registrar uma Evidência:
+                </h4>
+                <ol className="text-accessible-text-primary text-sm space-y-2 list-decimal list-inside">
+                  <li>Acesse um projeto no Dashboard</li>
+                  <li>Clique em um tema para ver seus requisitos</li>
+                  <li>Clique em "Registrar Evidência" no requisito desejado</li>
+                  <li>Preencha a descrição da evidência (como o requisito foi atendido)</li>
+                  <li>Defina a data de validade (se aplicável)</li>
+                  <li>Anexe até 3 documentos comprobatórios (PDFs, imagens, etc.)</li>
+                  <li>Clique em "Salvar" - o requisito mudará automaticamente para "Concluído"</li>
+                </ol>
+              </div>
+
+              <div className="bg-accessible-warning bg-opacity-10 p-4 rounded border border-accessible-warning">
+                <h4 className="font-semibold text-accessible-text-primary mb-2">
+                  🔍 Visualizando Evidências:
+                </h4>
+                <p className="text-accessible-text-primary text-sm">
+                  Requisitos com evidências registradas exibem um botão "Visualizar Evidência" que permite 
+                  consultar a descrição, data de validade e fazer download dos documentos anexados.
+                </p>
+              </div>
             </div>
           </div>
         </section>
