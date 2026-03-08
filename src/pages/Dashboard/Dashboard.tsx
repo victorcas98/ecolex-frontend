@@ -10,7 +10,7 @@ import { useExportPDF } from '../../hooks/useExportPDF';
 const Dashboard: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { projeto, getProjetoById, loading } = useProjetos();
+  const { projeto, getProjetoById, getAllProjetos, deleteProjeto, loading } = useProjetos();
   const { temas } = useProjetoStats(projeto);
   const { exportProjectSummary } = useExportPDF();
   const [isExporting, setIsExporting] = useState(false);
@@ -47,6 +47,19 @@ const Dashboard: React.FC = () => {
     }
   };
 
+  const handleDeleteProjeto = async () => {
+    if (!id) return;
+
+    const confirmed = window.confirm('Tem certeza que deseja excluir este projeto?');
+    if (!confirmed) return;
+
+    const success = await deleteProjeto(id);
+    if (success) {
+      await getAllProjetos();
+      navigate('/');
+    }
+  };
+
   if (loading) {
     return (
       <div className="w-full h-screen flex items-center justify-center">
@@ -67,13 +80,23 @@ const Dashboard: React.FC = () => {
     <div className="w-full h-screen">
       <div className="px-8 pt-4 flex justify-between items-center">
         <Title title={projeto.nome} />
-        <Button
-          onClick={handleExportPDF}
-          disabled={isExporting || !projeto}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {isExporting ? 'Gerando PDF...' : '📄 Exportar Resumo (PDF)'}
-        </Button>
+        <div className="flex gap-3">
+          <Button
+            onClick={handleDeleteProjeto}
+            disabled={loading}
+            className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            ariaLabel="Excluir projeto"
+          >
+            Excluir Projeto
+          </Button>
+          <Button
+            onClick={handleExportPDF}
+            disabled={isExporting || !projeto}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isExporting ? 'Gerando PDF...' : '📄 Exportar Resumo (PDF)'}
+          </Button>
+        </div>
       </div>
       
       <div className="p-8">

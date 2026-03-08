@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "../../components/Button";
 import Label from "../../components/Label";
 import TextInput from "../../components/TextInput";
@@ -17,7 +17,11 @@ const Legislacao: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   // Hook personalizado
-  const { createLei, loading, clearError } = useLeis();
+  const { leis, createLei, getAllLeis, deleteLei, loading, clearError } = useLeis();
+
+  useEffect(() => {
+    getAllLeis();
+  }, [getAllLeis]);
 
 
   const handleSubmit = async () => {
@@ -44,6 +48,16 @@ const Legislacao: React.FC = () => {
       }
     } catch (err) {
       console.error("Erro no submit:", err);
+    }
+  };
+
+  const handleDeleteLei = async (id: string) => {
+    const confirmed = window.confirm("Tem certeza que deseja excluir esta legislação?");
+    if (!confirmed) return;
+
+    const success = await deleteLei(id);
+    if (success) {
+      await getAllLeis();
     }
   };
 
@@ -174,6 +188,36 @@ const Legislacao: React.FC = () => {
             </Button>
           </div>
         </form>
+
+        <div className="px-8 pb-8">
+          <div className="border border-accessible-border rounded-md p-4 space-y-3">
+            <h2 className="text-accessible-text-primary font-semibold">Legislações cadastradas</h2>
+
+            {leis.length === 0 ? (
+              <p className="text-accessible-text-secondary text-sm">Nenhuma legislação cadastrada.</p>
+            ) : (
+              <ul className="space-y-2">
+                {leis.map((lei) => (
+                  <li
+                    key={lei.id}
+                    className="flex items-center justify-between gap-3 border border-accessible-border rounded-md px-3 py-2"
+                  >
+                    <span className="text-accessible-text-primary truncate">{lei.nome}</span>
+                    <Button
+                      type="button"
+                      onClick={() => handleDeleteLei(lei.id)}
+                      disabled={loading}
+                      className="!w-auto bg-red-600 hover:bg-red-700 text-white px-4 py-2"
+                      ariaLabel={`Excluir legislação ${lei.nome}`}
+                    >
+                      Excluir
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
