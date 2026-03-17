@@ -9,6 +9,9 @@ interface DropdownProps {
   items: DropdownItem[];
   selectedItem?: DropdownItem;
   onSelect: (item: DropdownItem) => void;
+  onItemAction?: (item: DropdownItem) => void;
+  itemActionLabel?: string;
+  itemActionAriaLabel?: (item: DropdownItem) => string;
   placeholder?: string;
   isClickable?: boolean;
   clickText?: string;
@@ -23,6 +26,9 @@ const Dropdown: React.FC<DropdownProps> = ({
   items,
   selectedItem,
   onSelect,
+  onItemAction,
+  itemActionLabel,
+  itemActionAriaLabel,
   isClickable = false,
   clickAction = () => {},
   clickText,
@@ -106,16 +112,35 @@ const Dropdown: React.FC<DropdownProps> = ({
               </div>
             )}
             {items.map((item) => (
-              <button
-                type="button"
+              <div
                 key={item.value}
-                onClick={() => handleItemSelect(item)}
-                className="w-full px-3 py-2 text-left hover:bg-accessible-bg-secondary transition-colors text-accessible-text-primary block"
-                aria-label={`Selecionar ${item.label}`}
-                role="menuitem"
+                className="w-full px-3 py-2 hover:bg-accessible-bg-secondary transition-colors flex items-center justify-between gap-2"
+                role="none"
               >
-                {item.label}
-              </button>
+                <button
+                  type="button"
+                  onClick={() => handleItemSelect(item)}
+                  className="text-left text-accessible-text-primary block flex-1"
+                  aria-label={`Selecionar ${item.label}`}
+                  role="menuitem"
+                >
+                  {item.label}
+                </button>
+                {onItemAction && itemActionLabel && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onItemAction(item);
+                    }}
+                    className="!w-auto bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm"
+                    aria-label={itemActionAriaLabel ? itemActionAriaLabel(item) : `${itemActionLabel} ${item.label}`}
+                    role="menuitem"
+                  >
+                    {itemActionLabel}
+                  </button>
+                )}
+              </div>
             ))}
           </div>
         </div>

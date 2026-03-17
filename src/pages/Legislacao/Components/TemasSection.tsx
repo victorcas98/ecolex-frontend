@@ -15,7 +15,7 @@ const TemasSection: React.FC<TemasSectionProps> = ({
   setTemasIds,
   temasIds,
 }) => {
-  const { temas, getAllTemas, createTema, error } = useTemas();
+  const { temas, getAllTemas, createTema, deleteTema, error } = useTemas();
   const { showError } = useAppContext();
 
   React.useEffect(() => {
@@ -52,9 +52,9 @@ const TemasSection: React.FC<TemasSectionProps> = ({
                   prev.filter((id) => id !== String(tema.id))
                 )
               }
-              ariaLabel={`Remover tema ${tema.nome}`}
+              ariaLabel={`Remover tema ${tema.nome} desta legislação`}
             >
-              - Remover tema
+              Remover da lei
             </Button>
           </div>
           <div className="px-2">
@@ -86,6 +86,18 @@ const TemasSection: React.FC<TemasSectionProps> = ({
       setDropDownText("Registrar tema");
     }
   };
+
+  const handleDeleteTema = async (id: string, nome: string) => {
+    const confirmed = window.confirm(`Tem certeza que deseja excluir o tema "${nome}"?`);
+    if (!confirmed) return;
+
+    const success = await deleteTema(id);
+    if (success) {
+      setTemasIds((prev) => prev.filter((temaId) => temaId !== id));
+      await getAllTemas();
+    }
+  };
+
   const temasDropdownItems = temas.map((tema) => ({
     label: tema.nome,
     value: String(tema.id),
@@ -111,6 +123,9 @@ const TemasSection: React.FC<TemasSectionProps> = ({
                   : [...prev, item.value as string]
               );
             }}
+            onItemAction={(item) => handleDeleteTema(item.value, item.label)}
+            itemActionLabel="Excluir"
+            itemActionAriaLabel={(item) => `Excluir tema ${item.label}`}
             placeholder="Selecione os temas para a lei"
           />
       </div>
